@@ -130,6 +130,39 @@ Los datos en la carpeta [CANAL TELEGRAM](https://github.com/JavierAlvarezLiebana
 
 ### Instalación
 
+Para poder ejecutar tú mismo/a el código, será necesario que te instales [R](https://cran.r-project.org/)
+
+#### Opción 1 (recomendada): con RStudio
+
+Es recomendable, en especial personas que se inicien en `R` (el lenguaje), la instalación del entorno de desarrollo [RStudio](https://www.rstudio.com/products/rstudio/download/#download) (el equivalente a un procesador de texto, usando el idioma `R`)
+
+Tras ello, **descarga TODOS los archivos (en un archivo zip, que luego tendrás que descomprimir en tu ordenador)** de este [repositorio](https://github.com/JavierAlvarezLiebana/vacunas_esp/archive/refs/heads/main.zip), guárdalo en la ruta que desees de tu ordenador y abre al archivo principal de código [codigo_resumen.R](https://github.com/JavierAlvarezLiebana/vacunas_esp/blob/main/codigo_resumen.R)
+
+![Descarga del zip](https://github.com/JavierAlvarezLiebana/COVID19/blob/master/figures/download_zip.jpg)
+
+Al inicio del archivo [codigo_resumen.R](https://github.com/JavierAlvarezLiebana/vacunas_esp/blob/main/codigo_resumen.R), **todas las variables serán automáticamente eliminadas**, todos los paquetes necesarios serán cargados o instalados (si es la primera que ejecutas un código R, tardará unos minutos en función de tu conexión a internet), y se fijará de forma automática el directorio de trabajo en la carpeta donde tengas el código, para que no tengas que configurar nada más.
+
+Puedes ejecutar el código completo simplemente presionando el botón `save` en RStudio, teniendo con un **tick activado la opción** `source on save` (a la derecha del botón de guardar).
+
+![Source on save](https://github.com/JavierAlvarezLiebana/COVID19/blob/master/figures/head_code_source_on_save.jpg)
+
+
+**IMPORTANTE**: si se produce algún error durante la instalación de los paquetes de `R`, por favor chequea si el **menú amarillo** de la iamgen aparece.
+
+![error](https://github.com/JavierAlvarezLiebana/COVID19/blob/master/figures/error_installing.jpg)
+
+Si fuera el caso, **haz click en el botón** `install` y espera hasta que los paquetes se instalen.
+
+
+#### Opción 2: ejecutar en la terminal de R (solo si no has ejecutado la opción 1).
+
+Si eres un nostálgico, puedes ejecutar el código directamente desde la consola de comandos.
+ 
+```R
+source('ruta_donde_hayas_guardado_el_codigo/codigo_resumen.R')
+```
+
+
 ### Variables generadas en los archivos exportados
 
 - **NOMBRES**: nombre de la comunidad autónoma
