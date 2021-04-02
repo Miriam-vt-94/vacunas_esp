@@ -5,11 +5,9 @@
 
 Repositorio con la actualización de vacunas en España, así como estadísticas y gráficas generadas a partir de ellas
 
-## ARCHIVOS DE DATOS Y SCRAPPING DE LOS PDF DE SANIDAD
+## DATOS FUENTE Y SCRAPPING DE LOS PDF DE SANIDAD
 
 Además de los códigos `.R`, el repositorio proporciona una serie de archivos, tanto datos fuente que se importarán para generar las tablas resumen, como datos exportados.
-
-### DATOS A IMPORTAR
 
 Dichos archivos se encuentran en la carpeta [DATOS](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/DATOS)
 
@@ -122,7 +120,10 @@ poblacion$porc_pobl_total_mayor_18a <-
   100 * poblacion$poblacion_mayor_18a / sum(poblacion$poblacion_mayor_18a)
 poblacion[, -1] <- round(poblacion[, -1], 3)
 
+```
 
-#### CANAL TELEGRAM
+### CANAL TELEGRAM
 
-Los datos en la carpeta [CANAL TELEGRAM](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/DATOS/CANAL_TELEGRAM) se encuentran descargados en html los mensajes enviados por el Ministerio de Sanidad en su canal de Telegram.
+Los datos en la carpeta [CANAL TELEGRAM](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/DATOS/CANAL_TELEGRAM) se encuentran descargados en html los mensajes enviados por el Ministerio de Sanidad en su [canal de Telegram](https://t.me/sanidadgob)
+
+## CÓDIGOS R
