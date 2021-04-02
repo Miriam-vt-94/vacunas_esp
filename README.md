@@ -132,6 +132,21 @@ Los datos en la carpeta [CANAL TELEGRAM](https://github.com/JavierAlvarezLiebana
 
 ### Variables generadas en los archivos exportados
 
+- **NOMBRES**: nombre de la comunidad autónoma
+- **ISO**: abreviatura según normas ISO.
+- **poblacion**, **poblacion_mayor_16a**, **poblacion_mayor_18a**: población de la comunidad autonónoma según [último censo del INE]: global, mayor de 16 años (inclusive) y mayor de 18 años (inclusive).
+- **porc_pobl_total**, **porc_pobl_mayor_16a**, **porc_pobl_mayor_18a**: % de población (peso poblacional) que representa dicha comunidad respecto al total de España.
+- **DOSIS_ENTREGADAS_PFIZER**, **DOSIS_ENTREGADAS_ASTRA_ZENECA**, **DOSIS_ENTREGADAS_MODERNA**: dosis entregadas a las comunidades autonónomas de Pfizer, Moderna y AstraZeneca.
+- **DOSIS_ENTREGADAS**: dosis totales entregadas (`DOSIS_ENTREGADAS_PFIZER + DOSIS_ENTREGADAS_MODERNA + DOSIS_ENTREGADAS_ASTRA_ZENECA`).
+- **PORC_ENTREGADAS_SOBRE_TOTAL**: % de dosis entregadas en cada comunidad respecto al total de dosis entregadas en España.
+- **DOSIS_ADMIN**: dosis administradas en cada comunidad.
+- **PAUTA_COMPLETA**, **PORC_PAUTA_COMPLETA**, **PORC_PAUTA_COMPLETA_16a**, **PORC_PAUTA_COMPLETA_18a**: personas con pauta completa (dos dosis salvo las vacunas que sean monodosis), así como el % de población (global, mayores de 18 años y de 16 años, ambos inclusive) que ya ha recibido dicha pauta vacunal completa.
+- **PORC_ADMIN_SOBRE_CCAA**: % de dosis administradas del total de dosis entregadas a la comunidad.
+- **PORC_ADMIN_SOBRE_TOTAL**: % de dosis administradas respecto al total de dosis administradas en España.
+- **DOSIS_ADMIN_100HAB**: dosis administradas por cada 100 habitantes.
+- **DESV_DOSIS_ENTREGADAS**, **DESV_DOSIS_ADMIN**: % de exceso/defecto de dosis entregadas y administradas de cada comunidad respecto a la media nacional (% de exceso/defecto del % de dosis entregadas respecto al total de España, en comparación con su peso poblacional).
+- **DESV_PORC_PAUTA_COMPLETA**, **DESV_PORC_PAUTA_COMPLETA_16a**, **DESV_PORC_PAUTA_COMPLETA_18a**: % de exceso/defecto de proporción de población con pauta completa de cada comunidad respecto a la media nacional.
+
 ### Scripts de R
 
 - **codigo_resumen.R**: código principal a ejecutar. Además del código citado anteriormente, en [codigo_resumen.R](https://github.com/JavierAlvarezLiebana/vacunas_esp/blob/main/codigo_resumen.R) se hace una llamada a tres script de R: `datos_por_fecha.R` (datos de vacunación en formato lista, una por fecha, y en cada una, los datos de todas las comunidades para cada una de ellas), `datos_por_ccaa.R` (datos de vacunación en formato lista, una por comunidad, y en cada una, la evolución por fecha de todas las variables) y `resumen_global.R` (datos de vacunación globales en España, con la evolución tempoeral de cada variable)
