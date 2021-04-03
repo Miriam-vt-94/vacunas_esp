@@ -13,8 +13,6 @@ if(!require(pdftools)) install.packages("pdftools", repos = repos)
 if(!require(tidyverse)) install.packages("tidyverse", repos = repos)
 if(!require(lubridate)) install.packages("lubridate", repos = repos)
 if(!require(textreadr)) install.packages("textreadr", repos = repos)
-# if(!require(rvest)) install.packages("rvest", repos = repos)
-
 
 
 # ##################################################
@@ -107,8 +105,15 @@ poblacion[, -1] <- round(poblacion[, -1], 3)
 # Cálculo de datos por fecha
 source("./datos_por_fecha.R")
 
+# Cálculo resumen global España
+source("./resumen_global.R")
+
 # Cálculo de datos por ccaa
 source("./datos_por_ccaa.R")
 
-# Cálculo resumen global España
-source("./resumen_global.R")
+# git add -A
+# git commit -m "Depurar"
+# git push
+
+
+
