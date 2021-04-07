@@ -141,11 +141,20 @@ source("./datos_por_ccaa.R")
 # Gráficas España
 source("./graficas_nacional.R")
 
+
+# ##########################################################
+# LECTURA DE META INFO DE LOS PDF SUBIDOS DE COVID
+# ##########################################################
+
+# Lectura de horas de subida de los pdf
+source("./meta_info.R")
+
+
 # ################
 # GITHUB
 # ################
 # git add -A
-# git commit -m "Depurar"
+# git commit -m "Graficas_nacional"
 # git push
 
 
