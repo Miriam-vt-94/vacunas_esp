@@ -118,7 +118,7 @@ for (i in 1:length(pdf_vacunas_leido)) {
     c(horas_pdf_vacunas,
       as.character(format(pdf_vacunas_leido[[i]]$modified, "%H:%M:%S")))
 }        
-cat(paste0("Se han exportado páginas/fecha/hora de ",
+cat(paste0("\nSe han exportado páginas/fecha/hora de ",
            length(fechas_pdf_vacunas), " informes de vacunas de Sanidad\n"))
 cat(paste0("Media de páginas: ", round(mean(paginas_pdf_vacunas), 2), "\n"))
 cat(paste0("Mediana de páginas: ", round(median(paginas_pdf_vacunas), 2), "\n"))

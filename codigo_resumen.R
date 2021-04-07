@@ -150,11 +150,31 @@ source("./graficas_nacional.R")
 source("./meta_info.R")
 
 
+
+cat("\n\n ======================\n")
+cat("GRÁFICAS CREADAS:\n")
+cat("1. Dosis entregadas acum. [barras verticales]\n")
+cat("--> fig_dosis_entregadas_vertical\n")
+cat("2. Dosis entregadas diarias [barras verticales]\n")
+cat("--> fig_dosis_entregadas_diarias_vertical\n")
+cat("3. Dosis entregadas acum. [barras horizontales]\n")
+cat("--> fig_dosis_entregadas_horizontal\n")
+cat("4. Dosis admin. acum. [barras horizontales + relleno + tendencia]\n")
+cat("--> fig_dosis_admin_vertical\n")
+cat("5. Personas vacunadas acum. [barras horizontales + línea tendencia]\n")
+cat("--> fig_vacunados\n")
+cat("6. Dosis entregadas acum. por farma [diagrama de rosa]\n")
+cat("--> fig_dosis_entregadas_rosa\n")
+cat("7. Dosis admin (general vs pauta completa) [diagrama de rosa]\n")
+cat("--> fig_dosis_admin_rosa\n")
+cat("8. Personas vacunadas (1 dosis vs 2 dosis) [diagrama de rosa]\n")
+cat("--> fig_personas_vacunadas_rosa\n\n")
+
 # ################
 # GITHUB
 # ################
 # git add -A
-# git commit -m "Graficas_nacional"
+# git commit -m "Meta_info"
 # git push
 
 
