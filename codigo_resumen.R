@@ -13,6 +13,26 @@ if(!require(pdftools)) install.packages("pdftools", repos = repos)
 if(!require(tidyverse)) install.packages("tidyverse", repos = repos)
 if(!require(lubridate)) install.packages("lubridate", repos = repos)
 if(!require(textreadr)) install.packages("textreadr", repos = repos)
+if(!require(plotly)) install.packages("plotly", repos = repos)
+if(!require(RColorBrewer)) install.packages("RColorBrewer", repos = repos)
+
+
+# #####################
+# CABECERA
+# #####################
+rm(list = ls()) # Limpiamos variables
+assign("last.warning", NULL, envir = baseenv()) # Limpiamos warnings
+options(warn = -1) # Desactivamos warnings
+setwd(dirname(rstudioapi::getSourceEditorContext()$path)) # Fijamos directorio
+
+# Cargamos librerías y paquetes
+repos <- "http://cran.us.r-project.org"
+if(!require(pdftools)) install.packages("pdftools", repos = repos)
+if(!require(tidyverse)) install.packages("tidyverse", repos = repos)
+if(!require(lubridate)) install.packages("lubridate", repos = repos)
+if(!require(textreadr)) install.packages("textreadr", repos = repos)
+if(!require(plotly)) install.packages("plotly", repos = repos)
+if(!require(RColorBrewer)) install.packages("RColorBrewer", repos = repos)
 
 
 # ##################################################
@@ -63,10 +83,11 @@ pdf_bruto <- pdf_nuevo
 # Guardamos
 save(pdf_bruto, file = "./DATOS/pdf_bruto.RData")
 
-# CCAA con sus nombres y códigos ISO
+# CCAA con sus nombres y códigos ISO: si da problemas de codificación,
+# quitar tildes
 ccaa <-
   data.frame("NOMBRES" =
-               c("ANDALUCÍA", "ARAGÓN", "ASTURIAS", "BALEARES", "CANARIAS",
+               c("ANDALUCÍA", "ARAGON", "ASTURIAS", "BALEARES", "CANARIAS",
                  "CANTABRIA", "CASTILLA Y LEÓN", "CASTILLA-LA MANCHA",
                  "CATALUNYA", "C. VALENCIANA", "EXTREMADURA",
                  "GALICIA", "LA RIOJA", "C. MADRID", "REGIÓN DE MURCIA",
@@ -100,7 +121,7 @@ poblacion[, -1] <- round(poblacion[, -1], 3)
 
 # ########################
 # RESUMEN
-# # ########################
+# ########################
 
 # Cálculo de datos por fecha
 source("./datos_por_fecha.R")
@@ -111,6 +132,18 @@ source("./resumen_global.R")
 # Cálculo de datos por ccaa
 source("./datos_por_ccaa.R")
 
+
+# ########################
+# GRÁFICOS
+# ########################
+
+
+# Gráficas España
+source("./graficas_nacional.R")
+
+# ################
+# GITHUB
+# ################
 # git add -A
 # git commit -m "Depurar"
 # git push
