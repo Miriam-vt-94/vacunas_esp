@@ -626,6 +626,12 @@ for (i in 1:length(ccaa$ISO)) {
     round(na_interpolation(aux[[i]]$personas_vacunadas))
   aux[[i]]$personas_1dosis <- aux[[i]]$personas_vacunadas -
     aux[[i]]$personas_pauta_completa
+  aux[[i]]$porc_personas_pauta_completa <-
+    round(100 * aux[[i]]$personas_pauta_completa /
+            aux[[i]]$poblacion, 3)
+  aux[[i]]$porc_personas_vacunadas <-
+    round(100 * aux[[i]]$personas_vacunadas /
+            aux[[i]]$poblacion, 3)
 
   # Demografía sin NA
   aux[[i]]$ISO<- as.character(unique(aux[[i]]$ISO))

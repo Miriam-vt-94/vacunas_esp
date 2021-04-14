@@ -22,6 +22,15 @@ if(!require(gganimate)) install.packages("gganimate", repos = repos)
 if(!require(animation)) install.packages("animation", repos = repos)
 if(!require(imputeTS)) install.packages("imputeTS", repos = repos)
 
+if(!require(sf)) install.packages("sf", repos = repos)
+if(!require(mapSpain)) install.packages("mapSpain", repos = repos)
+if(!require(readr)) install.packages("readr", repos = repos)
+if(!require(dplyr)) install.packages("dplyr", repos = repos)
+if(!require(glue)) install.packages("glue", repos = repos)
+if(!require(ggplot2)) install.packages("ggplot2", repos = repos)
+if(!require(ggtext)) install.packages("ggtext", repos = repos)
+if(!require(ragg)) install.packages("ragg", repos = repos)
+
 
 # ##################################################
 # DESCARGA PDF DE VACUNAS + CARGA DE DATOS
@@ -148,9 +157,9 @@ cat("4. Dosis entregadas acum. [barras horizontales]\n")
 cat("--> fig_dosis_entregadas_horizontal\n")
 #
 cat("5. Dosis admin. acum. [barras verticales + relleno + tendencia]\n")
-cat("--> fig_dosis_admin_vertical\n")
+cat("--> fig_dosis_admin_acum\n")
 cat("6. Dosis admin. diarias [barras verticales]\n")
-cat("--> fig_admin_diarias\n")
+cat("--> fig_dosis_admin_diarias\n")
 #
 cat("7. Personas vacunadas acum. [barras verticales + línea tendencia]\n")
 cat("--> fig_vacunados\n")

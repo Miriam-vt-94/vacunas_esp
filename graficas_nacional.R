@@ -10,14 +10,15 @@
 # 4. Dosis entregadas acumuladas por farma [barras horizontales]
 #    --> fig_dosis_entregadas_horizontal
 #
-# 5. Dosis administradas acumuladas [barras horizontales + forma rellena +
+# 5. Dosis administradas acumuladas [barras verticales + forma rellena +
 #    + línea tendencia]
-#    --> fig_dosis_admin_vertical
+#    --> fig_dosis_admin_acum
+# 6. Dosis administradas diarias [barras verticales + forma rellena +
+#    + línea tendencia]
+#    --> fig_dosis_admin_diarias
 #
-# 6. Personas vacunadas acumuladas [barras horizontales + línea tendencia]
+# 7. Personas vacunadas acumuladas [barras verticales + línea tendencia]
 #    --> fig_vacunados
-# 7. Personas vacunadas diarios [barras horizontales]
-#    --> fig_vacunados_diarios
 #
 # 8. Dosis entregadas acumuladas por farma [diagrama de rosa]
 #    --> fig_dosis_entregadas_rosa
@@ -312,7 +313,7 @@ fig_dosis_entregadas_diarias_vertical_sin_huecos <-
                   "<a href = 'https://www.mscbs.gob.es/profesionales/",
                   "saludPublica/ccayes/alertasActual/nCov/",
                   "situacionActual.htm'>Ministerio Sanidad</a> ",
-                  "(solo figuran los dosis con alguna entrega)"),
+                  "(solo figuran los días con entrega)"),
          # Fuente
          font = list(family = "poppins"), 
          titlefont = list(face = "bold", size = 17),
@@ -447,12 +448,12 @@ htmlwidgets::saveWidget(fig_dosis_entregadas_horizontal,
 # #####################################################
 # 5. DOSIS ADMINISTRADAS ACUMULADAS (VERTICALES)
 # #####################################################
-fig_dosis_admin_acum_vertical <- plot_ly(type = "bar")
+fig_dosis_admin_acum <- plot_ly(type = "bar")
 
 
 # Dosis entregadas
-fig_dosis_admin_acum_vertical <-
-  fig_dosis_admin_acum_vertical %>%
+fig_dosis_admin_acum <-
+  fig_dosis_admin_acum %>%
   add_trace(x = panel_vacunas$ES$fechas,
             y = panel_vacunas$ES$dosis_entrega,
             type = "scatter", mode = "lines", name = "Dosis entregadas",
@@ -468,8 +469,8 @@ fig_dosis_admin_acum_vertical <-
                      "%"))
 
 # Dosis por 100 hab
-fig_dosis_admin_acum_vertical <-
-  fig_dosis_admin_acum_vertical %>%
+fig_dosis_admin_acum <-
+  fig_dosis_admin_acum %>%
   add_trace(x = panel_vacunas$ES$fechas,
             y = panel_vacunas$ES$dosis_admin_100hab,
             type = "scatter", mode = "lines",
@@ -483,8 +484,8 @@ fig_dosis_admin_acum_vertical <-
             yaxis = "y2")
 
 # Dosis administradas para pauta completa
-fig_dosis_admin_acum_vertical <-
-  fig_dosis_admin_acum_vertical %>%
+fig_dosis_admin_acum <-
+  fig_dosis_admin_acum %>%
   add_trace(x = panel_vacunas$ES$fechas,
             y = panel_vacunas$ES$dosis_pauta_completa,
             type = "bar", name = "Dosis admin. (pauta completa)",
@@ -496,11 +497,10 @@ fig_dosis_admin_acum_vertical <-
 
 
 # Dosis administradas totales
-fig_dosis_admin_acum_vertical <-
-  fig_dosis_admin_acum_vertical %>%
+fig_dosis_admin_acum <-
+  fig_dosis_admin_acum %>%
   add_trace(x = panel_vacunas$ES$fechas,
-            y = panel_vacunas$ES$dosis_primera -
-              panel_vacunas$ES$personas_pauta_completa,
+            y = panel_vacunas$ES$dosis_primera,
             type = "bar", name = "Dosis admin.",
             marker = list(color = "rgba(234, 140, 115, 1)"), # Color
             hovertemplate = # Info HTML al pasar el ratón
@@ -511,8 +511,8 @@ fig_dosis_admin_acum_vertical <-
 
 
 # Ajustes globales de la gráfica
-fig_dosis_admin_acum_vertical <-
-  fig_dosis_admin_acum_vertical %>%
+fig_dosis_admin_acum <-
+  fig_dosis_admin_acum %>%
   layout(separators = ". ", showlegend = TRUE,
          legend = # Leyenda
            list(title = "Dosis administradas", orientation = "v",
@@ -555,14 +555,96 @@ fig_dosis_admin_acum_vertical <-
   config(locale = "es", showLink = TRUE, displayModeBar = TRUE)
 
 # Guardamos
-htmlwidgets::saveWidget(fig_dosis_admin_acum_vertical,
+htmlwidgets::saveWidget(fig_dosis_admin_acum,
                         file = paste0("./GRAFICAS/NACIONALES/",
-                                      "dosis_admin_acum_vertical.html"),
+                                      "dosis_admin_acum.html"),
                         selfcontained = TRUE)
 
 
 # #####################################################
-# 6. PERSONAS VACUNADAS ACUMULADAS
+# 6. DOSIS ADMIN DIARIAS
+# #####################################################
+
+fig_dosis_admin_diarias <- plot_ly(type = "bar")
+
+# Dosis admin (2ª dosis)
+fig_dosis_admin_diarias <-
+  fig_dosis_admin_diarias %>%
+  add_trace(x = panel_vacunas$ES$fechas,
+            y = panel_vacunas$ES$dosis_diarias_segunda,
+            type = "bar", name = "Dosis diarias (2ª dosis)",
+            marker = list(color = "rgba(170, 81, 217, 1)"), # Color
+            hovertemplate = # Info HTML al pasar el ratón
+              paste0("<br><b>Dosis diarias (2ª dosis): %{y}",
+                     "<extra></extra><br>"))
+
+# Dosis admin (1ª dosis)
+fig_dosis_admin_diarias <-
+  fig_dosis_admin_diarias %>%
+  add_trace(x = panel_vacunas$ES$fechas,
+            y = panel_vacunas$ES$dosis_diarias_primera,
+            type = "bar", name = "Dosis admin. diarias (1ª dosis)",
+            marker = list(color = "rgba(234, 140, 115, 1)"), # Color
+            hovertemplate = # Info HTML al pasar el ratón
+              paste0("<b>Dosis admin. diarias (1ª dosis): %{y}",
+                     "</b><extra></extra><br>",
+                     "Dosis admin. diarias: ",
+                     panel_vacunas$ES$dosis_diarias_admin, "<br>",
+                     "Dosis admin. diarias / 100 hab: ",
+                     panel_vacunas$ES$dosis_diarias_admin_100hab))
+
+# Ajustes globales de la gráfica
+fig_dosis_admin_diarias <- fig_dosis_admin_diarias %>%
+  layout(separators = ". ", showlegend = TRUE,
+         legend = # Leyenda
+           list(title = "Personas vacunadas acum.", orientation = "v",
+                xref = "paper", yref = "paper", x = 0.01, y = 1,
+                font = list(size = 13),
+                bgcolor = "rgba(256, 256, 256, 0.7)"),
+         title = # Título gráfica
+           paste0("<b>Dosis administradas (diarias) en España (",
+                  as.character(format(max(as.Date(panel_vacunas$ES$fechas)),
+                                      "%d-%m-%Y")), ")</b><br>",
+                  "<sup>Gráficos elaborados por Javier Álvarez Liébana ",
+                  "(@DadosDeLaplace). Datos: INE y ",
+                  "<a href = 'https://www.mscbs.gob.es/profesionales/",
+                  "saludPublica/ccayes/alertasActual/nCov/",
+                  "situacionActual.htm'>Ministerio Sanidad</a><br>(se ",
+                  "interpola linealmente los días sin informe)"),
+         # Fuente
+         font = list(family = "poppins"), 
+         titlefont = list(face = "bold", size = 17),
+         # Formato eje Y
+         yaxis = list(title = "Personas", font = list(size = 15),
+                      # Números completos, no abreviados tipo 1M
+                      tickformat = ".0f"),
+         yaxis2 = list(overlaying = "y", side = "right",
+                       title = "% población",
+                       font = list(size = 15), ticksuffix = "%"),
+         # Formato eje X: título y le indicamos que es formato fecha
+         xaxis =
+           list(title = "Fechas", type = "date", tickformat = "%d-%m-%y",
+                font = list(size = 15), nticks = 40),
+         # Barras apiladas (separación de 0.1 entre fechas)
+         barmode = "stack", bargap = 0.1,
+         # Tamaño texto info HTML al pasar el ratón
+         hoverlabel = list(font = list(size = 11)),
+         # Unificamos info html en el mismo x
+         hovermode = "x unified", 
+         autosize = TRUE,
+         margin = # Margen
+           list(l = 100, r = 100, b = 50, t = 80, pad = 3)) %>%
+  config(locale = "es", showLink = TRUE, displayModeBar = TRUE)
+
+# Guardamos
+htmlwidgets::saveWidget(fig_dosis_admin_diarias,
+                        file = paste0("./GRAFICAS/NACIONALES/",
+                                      "dosis_admin_diarias.html"),
+                        selfcontained = TRUE)
+
+
+# #####################################################
+# 7. PERSONAS VACUNADAS ACUMULADAS
 # #####################################################
 
 # Previsión de los 5 millones de inmunizados con pauta completa
@@ -606,7 +688,7 @@ fig_vacunados <-
   add_trace(x = panel_vacunas$ES$fechas,
             y = panel_vacunas$ES$porc_personas_vacunadas_16a,
             type = "scatter", mode = "lines",
-            name = "% población vacunada \u2265 18a",
+            name = "% población vacunada \u2265 16a",
             line = list(color = "rgba(49, 160, 35, 0.5)",
                         shape = "spline", width = 3.5, dash = "dash"),
             hovertemplate = # Info HTML al pasar el ratón
@@ -634,7 +716,7 @@ fig_vacunados <-
   add_trace(x = panel_vacunas$ES$fechas,
             y = panel_vacunas$ES$porc_personas_pauta_completa_16a,
             type = "scatter", mode = "lines",
-            name = "% población pauta completa \u2265 18a",
+            name = "% población pauta completa \u2265 16a",
             line = list(color = "rgba(31, 31, 31, 0.5)",
                         shape = "spline", width = 3.5, dash = "dash"),
             hovertemplate = # Info HTML al pasar el ratón
@@ -700,8 +782,8 @@ fig_vacunados <- fig_vacunados %>%
                   "(@DadosDeLaplace). Datos: INE y ",
                   "<a href = 'https://www.mscbs.gob.es/profesionales/",
                   "saludPublica/ccayes/alertasActual/nCov/",
-                  "situacionActual.htm'>Ministerio Sanidad</a><br>(se imputa ",
-                  "como 0 los días sin informe de Sanidad)"),
+                  "situacionActual.htm'>Ministerio Sanidad</a><br>(se ",
+                  "inteporla linealmente los días sin informe)"),
          # Fuente
          font = list(family = "poppins"), 
          titlefont = list(face = "bold", size = 17),
@@ -734,104 +816,19 @@ htmlwidgets::saveWidget(fig_vacunados,
                         selfcontained = TRUE)
 
 
-# #####################################################
-# 7. DOSIS ADMIN DIARIAS
-# #####################################################
-
-fig_admin_diarias <- plot_ly(type = "bar")
-
-
-# Dosis admin (2ª dosis)
-fig_admin_diarias <-
-  fig_admin_diarias %>%
-  add_trace(x = panel_vacunas$ES$fechas,
-            y = panel_vacunas$ES$personas_pauta_completa_diarias,
-            type = "bar", name = "Dosis diarias (2ª dosis)",
-            marker = list(color = "rgba(170, 81, 217, 1)"), # Color
-            hovertemplate = # Info HTML al pasar el ratón
-              paste0("<br><b>Dosis diarias (2ª dosis): %{y}",
-                     "<extra></extra><br>"))
-
-# Dosis admin (1ª dosis)
-fig_admin_diarias <-
-  fig_admin_diarias %>%
-  add_trace(x = panel_vacunas$ES$fechas,
-            y = panel_vacunas$ES$dosis_diarias_admin -
-              panel_vacunas$ES$personas_pauta_completa_diarias,
-            type = "bar", name = "Dosis admin. diarias (1ª dosis)",
-            marker = list(color = "rgba(234, 140, 115, 1)"), # Color
-            hovertemplate = # Info HTML al pasar el ratón
-              paste0("<b>Dosis admin. diarias (1ª dosis): %{y}",
-                     "<extra></extra><br>",
-                     "Dosis admin. diarias: ",
-                     panel_vacunas$ES$dosis_diarias_admin))
-
-
-
-# Ajustes globales de la gráfica
-fig_admin_diarias <- fig_admin_diarias %>%
-  layout(separators = ". ", showlegend = TRUE,
-         legend = # Leyenda
-           list(title = "Personas vacunadas acum.", orientation = "v",
-                xref = "paper", yref = "paper", x = 0.01, y = 1,
-                font = list(size = 13),
-                bgcolor = "rgba(256, 256, 256, 0.7)"),
-         title = # Título gráfica
-           paste0("<b>Dosis administradas (diarias) en España (",
-                  as.character(format(max(as.Date(panel_vacunas$ES$fechas)),
-                                      "%d-%m-%Y")), ")</b><br>",
-                  "<sup>Gráficos elaborados por Javier Álvarez Liébana ",
-                  "(@DadosDeLaplace). Datos: INE y ",
-                  "<a href = 'https://www.mscbs.gob.es/profesionales/",
-                  "saludPublica/ccayes/alertasActual/nCov/",
-                  "situacionActual.htm'>Ministerio Sanidad</a><br>(se ",
-                  "inteprola linealmente los días sin informe de Sanidad)"),
-         # Fuente
-         font = list(family = "poppins"), 
-         titlefont = list(face = "bold", size = 17),
-         # Formato eje Y
-         yaxis = list(title = "Personas", font = list(size = 15),
-                      # Números completos, no abreviados tipo 1M
-                      tickformat = ".0f"),
-         yaxis2 = list(overlaying = "y", side = "right",
-                       title = "% población",
-                       font = list(size = 15), ticksuffix = "%"),
-         # Formato eje X: título y le indicamos que es formato fecha
-         xaxis =
-           list(title = "Fechas", type = "date", tickformat = "%d-%m-%y",
-                font = list(size = 15), nticks = 40),
-         # Barras apiladas (separación de 0.1 entre fechas)
-         barmode = "stack", bargap = 0.1,
-         # Tamaño texto info HTML al pasar el ratón
-         hoverlabel = list(font = list(size = 11)),
-         # Unificamos info html en el mismo x
-         hovermode = "x unified", 
-         autosize = TRUE,
-         margin = # Margen
-           list(l = 100, r = 100, b = 50, t = 80, pad = 3)) %>%
-  config(locale = "es", showLink = TRUE, displayModeBar = TRUE)
-
-# Guardamos
-htmlwidgets::saveWidget(fig_admin_diarias,
-                        file = paste0("./GRAFICAS/NACIONALES/",
-                                      "dosis_admin_diarias.html"),
-                        selfcontained = TRUE)
-
 
 # #############################################
-# GRÁFICO DE ROSA: DOSIS ENTREGADAS ACUM.
+# 8. GRÁFICO DE ROSA: DOSIS ENTREGADAS ACUM.
 # #############################################
 
-# Calculamos las dosis entregadas por semana
+# Preparamos los datos semanlmente
 dosis_semana <-
-  data.frame("fechas" = names(panel_vacunas_global),
-             "semana" = week(names(panel_vacunas_global)),
-             "dosis_pfizer" = 
-               as.numeric(panel_vacunas_global["DOSIS_ENTREGADAS_PFIZER", ]),
-             "dosis_astra" = 
-               as.numeric(panel_vacunas_global["DOSIS_ENTREGADAS_ASTRA_ZENECA", ]),
-             "dosis_moderna" = 
-               as.numeric(panel_vacunas_global["DOSIS_ENTREGADAS_MODERNA", ]))
+  data.frame("fechas" = panel_vacunas$ES$fechas,
+             "semana" = week(as.Date(panel_vacunas$ES$fechas)),
+             "dosis_pfizer" = panel_vacunas$ES$dosis_entrega_pfizer,
+             "dosis_astra" = panel_vacunas$ES$dosis_entrega_astra,
+             "dosis_moderna" = panel_vacunas$ES$dosis_entrega_moderna)
+
 # Agrupamos por semana
 aux <- dosis_semana %>% group_by(semana) %>%
   summarise(dosis_pfizer = max(dosis_pfizer))
@@ -840,6 +837,7 @@ aux <- cbind(aux, (dosis_semana %>% group_by(semana) %>%
 aux <- cbind(aux, (dosis_semana %>% group_by(semana) %>%
                      summarise(dosis_moderna =
                                  max(dosis_moderna)))$dosis_moderna)
+
 # Guardamos y renombramos columnas
 dosis_semana <- aux
 names(dosis_semana) <-
@@ -920,24 +918,23 @@ fig_dosis_entregadas_rosa <- fig_dosis_entregadas_rosa %>%
 
 # Guardamos
 htmlwidgets::saveWidget(fig_dosis_entregadas_rosa,
-                        file = paste0("./GRAFICAS_HTML/",
-                                      "fig_dosis_entregadas_rosa.html"),
+                        file = paste0("./GRAFICAS/NACIONALES/",
+                                      "dosis_entregadas_rosa.html"),
                         selfcontained = TRUE)
 
 
 
 # #############################################
-# GRÁFICO DE ROSA: DOSIS ADMIN ACUM.
+# 9. GRÁFICO DE ROSA: DOSIS ADMIN ACUM.
 # #############################################
 
 # Calculamos las dosis administradas acum. por semana
 dosis_admin_semana <-
-  data.frame("fechas" = names(panel_vacunas_global),
-             "semana" = week(names(panel_vacunas_global)),
-             "admin" = 
-               as.numeric(panel_vacunas_global["DOSIS_ADMIN", ]),
-             "pauta_completa" = 
-               2 * as.numeric(panel_vacunas_global["PAUTA_COMPLETA", ]))
+  data.frame("fechas" = panel_vacunas$ES$fechas,
+             "semana" = week(as.Date(panel_vacunas$ES$fechas)),
+             "admin" = panel_vacunas$ES$dosis_admin,
+             "pauta_completa" =
+               2 * panel_vacunas$ES$personas_pauta_completa)
 # Agrupamos por semana
 aux <- dosis_admin_semana %>% group_by(semana) %>%
   summarise(admin = max(admin))
@@ -1009,22 +1006,22 @@ fig_dosis_admin_rosa <- fig_dosis_admin_rosa %>%
 
 # Guardamos
 htmlwidgets::saveWidget(fig_dosis_admin_rosa,
-                        file = paste0("./GRAFICAS_HTML/",
-                                      "fig_dosis_admin_rosa.html"),
+                        file = paste0("./GRAFICAS/NACIONALES/",
+                                      "dosis_admin_rosa.html"),
                         selfcontained = TRUE)
 
 # #############################################
-# GRÁFICO DE ROSA: PERSONAS VACUNADAS ACUM.
+# 10. GRÁFICO DE ROSA: PERSONAS VACUNADAS ACUM.
 # #############################################
 
 # Calculamos vacunados (acumulados) por semana
 personas_vacunadas_semana <-
-  data.frame("fechas" = names(panel_vacunas_global),
-             "semana" = week(names(panel_vacunas_global)),
+  data.frame("fechas" = panel_vacunas$ES$fechas,
+             "semana" = week(as.Date(panel_vacunas$ES$fechas)),
              "personas_vacunadas" =
-               as.numeric(panel_vacunas_global["PERSONAS_VACUNADAS", ]),
+               panel_vacunas$ES$personas_vacunadas,
              "pauta_completa" = 
-               as.numeric(panel_vacunas_global["PAUTA_COMPLETA", ]))
+               panel_vacunas$ES$personas_pauta_completa)
 # Agrupamos por semana
 aux <- personas_vacunadas_semana %>% group_by(semana) %>%
   summarise(personas_vacunadas = max(personas_vacunadas))
@@ -1099,13 +1096,13 @@ fig_personas_vacunadas_rosa <- fig_personas_vacunadas_rosa %>%
 
 # Guardamos
 htmlwidgets::saveWidget(fig_personas_vacunadas_rosa,
-                        file = paste0("./GRAFICAS_HTML/",
-                                      "fig_personas_vacunadas_rosa.html"),
+                        file = paste0("./GRAFICAS/NACIONALES/",
+                                      "personas_vacunadas_rosa.html"),
                         selfcontained = TRUE)
 
 
 # #############################################
-# WAFFLE: DOSIS ENTREGADAS
+# 11. WAFFLE: DOSIS ENTREGADAS
 # #############################################
 
 # Número de cuadrados
@@ -1113,19 +1110,19 @@ n_cuadrados <- 200
 
 # Ya generados
 waffle_generados <-
-  gsub("fig_waffle_dosis_entregadas_", "",
-       gsub(".png", "", dir("./GRAFICAS_GGPLOT2/")))
+  gsub("waffle_dosis_entregadas_", "",
+       gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
 # Un gráfico por fecha
 fig_waffle_dosis_entregadas <- list()
-for (i in 1:length(panel_vacunas_global)) {
+for (i in 1:length(panel_vacunas$ES$fechas)) {
   
   proporciones <- c()
-  proporciones[1] <- panel_vacunas_global["DOSIS_ENTREGADAS_PFIZER", i] /
-    panel_vacunas_global["DOSIS_ENTREGADAS", i]
-  proporciones[2] <- panel_vacunas_global["DOSIS_ENTREGADAS_MODERNA", i] /
-    panel_vacunas_global["DOSIS_ENTREGADAS", i]
-  proporciones[3] <- panel_vacunas_global["DOSIS_ENTREGADAS_ASTRA_ZENECA", i] /
-    panel_vacunas_global["DOSIS_ENTREGADAS", i]
+  proporciones[1] <- panel_vacunas$ES$dosis_entrega_pfizer[i] /
+    panel_vacunas$ES$dosis_entrega[i]
+  proporciones[2] <- panel_vacunas$ES$dosis_entrega_moderna[i] /
+    panel_vacunas$ES$dosis_entrega[i]
+  proporciones[3] <- panel_vacunas$ES$dosis_entrega_astra[i] /
+    panel_vacunas$ES$dosis_entrega[i]
   names(proporciones) <- c("Pfizer", "Moderna", "AstraZeneca")
   
   # Los waffle son ggplot (no plotly) así que deben ser editados como tal
@@ -1133,18 +1130,17 @@ for (i in 1:length(panel_vacunas_global)) {
     waffle(parts =
              c(round(proporciones[1:2] * n_cuadrados),
                "AstraZeneca" =
-                 n_cuadrados - sum(round(proporciones[1:2] * n_cuadrados))), rows = 10,
-             colors = c("#60B2FF", "#4ED2AC", "#E96980")) +
+                 n_cuadrados - sum(round(proporciones[1:2] * n_cuadrados))),
+           rows = 10, colors = c("#60B2FF", "#4ED2AC", "#E96980")) +
     ggtitle(paste0("Dosis entregadas (acumuladas) en España (",
-                   format(as.Date(names(panel_vacunas_global)[i]), "%d-%m-%Y"),
+                   format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
                    ")"),
             subtitle =
               paste0("Gráficos elaborados por ",
                      "Javier Álvarez Liébana (@DadosDeLaplace). ",
                      "Datos: INE y Ministerio de Sanidad")) +
     xlab(paste0("Dosis entregadas (cuadrado = 0.5% = ",
-                round(0.005 *
-                        panel_vacunas_global["DOSIS_ENTREGADAS", i]),
+                round(0.005 * panel_vacunas$ES$dosis_entrega[i]),
                 " dosis, columna = 5%)")) +
     theme(plot.title = element_text(size = 19, face = "bold",
                                     family = "poppins"),
@@ -1155,16 +1151,16 @@ for (i in 1:length(panel_vacunas_global)) {
           plot.margin = margin(l = 60))
 
   # Guardamos
-  if (!(names(panel_vacunas_global)[i] %in% waffle_generados)) {
+  if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
     
-    ggsave(paste0("./GRAFICAS_GGPLOT2/fig_waffle_dosis_entregadas_",
-                  names(panel_vacunas_global)[i], ".png"),
+    ggsave(paste0("./GRAFICAS/GOFRES/waffle_dosis_entregadas_",
+                  panel_vacunas$ES$fechas[i], ".png"),
            plot = fig_waffle_dosis_entregadas[[i]],
            width = 10, height = 10)
     
   }
 }
-names(fig_waffle_dosis_entregadas) <- names(panel_vacunas_global)
+names(fig_waffle_dosis_entregadas) <- panel_vacunas$ES$fechas
   
 
 # #############################################
@@ -1178,12 +1174,12 @@ saveGIF({
     print(fig_waffle_dosis_entregadas[[i]])
     
   }},
-  movie.name = "./gif_dosis_entregadas.gif",
+  movie.name = "./gif_waffle_dosis_entregadas.gif",
   ani.height = 700, ani.width = 700)
 
 
 # #############################################
-# WAFFLE: DOSIS ADMIN
+# 12. WAFFLE: DOSIS ADMIN
 # #############################################
 
 # Número de cuadrados
@@ -1191,18 +1187,18 @@ n_cuadrados <- 200
 
 # Ya generados
 waffle_generados <-
-  gsub("fig_waffle_dosis_admin_", "",
-       gsub(".png", "", dir("./GRAFICAS_GGPLOT2/")))
+  gsub("waffle_dosis_admin_", "",
+       gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
 # Un gráfico por fecha
 fig_waffle_dosis_admin <- list()
-for (i in 1:length(panel_vacunas_global)) {
+for (i in 1:length(panel_vacunas$ES$fechas)) {
 
   proporciones <- c()
-  proporciones[1] <- round(panel_vacunas_global["DOSIS_ADMIN_100HAB", i] *
-    (n_cuadrados / 100))
+  proporciones[1] <-
+    round(panel_vacunas$ES$dosis_admin_100hab[i] * (n_cuadrados / 100))
   proporciones[2] <-
-    round(n_cuadrados * panel_vacunas_global["DOSIS_ENTREGADAS", i] /
-            sum(poblacion$poblacion))
+    round(n_cuadrados * panel_vacunas$ES$dosis_entrega[i] /
+            panel_vacunas$ES$poblacion[1])
   proporciones[3] <- n_cuadrados - sum(proporciones)
   names(proporciones) <- c("Admin. por 100 hab.", "Entregadas por 100 hab.",
                            "restantes")
@@ -1212,7 +1208,7 @@ for (i in 1:length(panel_vacunas_global)) {
     waffle(parts = proporciones, rows = 10,
            colors = c("#41B033", "#B29393", "#494949")) +
     ggtitle(paste0("Dosis entregadas (acumuladas) en España (",
-                   format(as.Date(names(panel_vacunas_global)[i]), "%d-%m-%Y"),
+                   format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
                    ")"),
             subtitle =
               paste0("Gráficos elaborados por ",
@@ -1229,16 +1225,16 @@ for (i in 1:length(panel_vacunas_global)) {
           plot.margin = margin(l = 60))
 
   # Guardamos
-  if (!(names(panel_vacunas_global)[i] %in% waffle_generados)) {
+  if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
 
-    ggsave(paste0("./GRAFICAS_GGPLOT2/fig_waffle_dosis_admin_",
-                  names(panel_vacunas_global)[i], ".png"),
+    ggsave(paste0("./GRAFICAS/GOFRES/fig_waffle_dosis_admin_",
+                  panel_vacunas$ES$fechas[i], ".png"),
            plot = fig_waffle_dosis_admin[[i]],
            width = 10, height = 10)
 
   }
 }
-names(fig_waffle_dosis_admin) <- names(panel_vacunas_global)
+names(fig_waffle_dosis_admin) <- panel_vacunas$ES$fechas
 
 
 
@@ -1258,37 +1254,40 @@ saveGIF({
     print(fig_waffle_dosis_admin[[i]])
     
   }},
-  movie.name = "./gif_dosis_admin.gif",
+  movie.name = "./gif_waffle_dosis_admin.gif",
   ani.height = 700, ani.width = 700)
 
 
 
 # #############################################
-# WAFFLE: PERSONAS VACUNADAS
+# 13. WAFFLE: PERSONAS VACUNADAS
 # #############################################
 
 # Número de cuadrados
 n_cuadrados <- 200
 
 # Ya generados
-waffle_generados <- 1
-  # gsub("fig_waffle_personas_vacunadas", "",
-  #      gsub(".png", "", dir("./GRAFICAS_GGPLOT2/")))
+waffle_generados <- gsub("waffle_personas_vacunadas", "",
+                         gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
+
 # Un gráfico por fecha
 fig_waffle_personas_vacunadas <- list()
-for (i in 1:length(panel_vacunas_global)) {
+for (i in 1:length(panel_vacunas$ES$fechas)) {
   
   proporciones <- c()
-  proporciones[1] <- round(panel_vacunas_global["PORC_PAUTA_COMPLETA", i] *
-                             (n_cuadrados / 100))
-  proporciones[2] <-
-    round((panel_vacunas_global["PORC_PERSONAS_VACUNADAS", i] -
-            panel_vacunas_global["PORC_PAUTA_COMPLETA", i]) *
+  proporciones[1] <-
+    round(panel_vacunas$ES$porc_personas_pauta_completa[i] *
             (n_cuadrados / 100))
-  proporciones[3] <- round(n_cuadrados * (1.5e7 / sum(poblacion$poblacion)) -
-                             sum(proporciones))
-  proporciones[4] <- round(n_cuadrados * (2.5e7 / sum(poblacion$poblacion)) -
-                             sum(proporciones))
+  proporciones[2] <-
+    round((panel_vacunas$ES$porc_personas_vacunadas[i] -
+             panel_vacunas$ES$porc_personas_pauta_completa[i]) *
+            (n_cuadrados / 100))
+  proporciones[3] <-
+    round(n_cuadrados * (1.5e7 / panel_vacunas$ES$poblacion[1]) -
+            sum(proporciones))
+  proporciones[4] <-
+    round(n_cuadrados * (2.5e7 / panel_vacunas$ES$poblacion[1]) -
+            sum(proporciones))
   proporciones[5] <- round(n_cuadrados * 0.7 - sum(proporciones))
   proporciones[6] <- n_cuadrados - sum(proporciones)
   names(proporciones) <-
@@ -1303,14 +1302,14 @@ for (i in 1:length(panel_vacunas_global)) {
            colors = c("#AA51D9", "#EA8C73", "#66AADF",
                       "#A3C4B7", "#B4B8BB", "#515151")) +
     ggtitle(paste0("Personas vacunadas (acumuladas) en España (",
-                   format(as.Date(names(panel_vacunas_global)[i]), "%d-%m-%Y"),
+                   format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
                    ")"),
             subtitle =
               paste0("Gráficos elaborados por ",
                      "Javier Álvarez Liébana (@DadosDeLaplace). ",
                      "Datos: INE y Ministerio de Sanidad")) +
     xlab(paste0("Personas vacunadas (1 cuadrado = 0.5% población, ",
-                "columna = 5%)")) +
+                "columna = 5%, 5M = 10%)")) +
     theme(plot.title = element_text(size = 19, face = "bold",
                                     family = "poppins"),
           plot.subtitle = element_text(size = 13,
@@ -1320,16 +1319,16 @@ for (i in 1:length(panel_vacunas_global)) {
           plot.margin = margin(l = 60))
   
   # Guardamos
-  if (!(names(panel_vacunas_global)[i] %in% waffle_generados)) {
+  if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
     
-    ggsave(paste0("./GRAFICAS_GGPLOT2/fig_waffle_personas_vacunadas_",
-                  names(panel_vacunas_global)[i], ".png"),
+    ggsave(paste0("./GRAFICAS/GOFRES/waffle_personas_vacunadas_",
+                  panel_vacunas$ES$fechas[i], ".png"),
            plot = fig_waffle_personas_vacunadas[[i]],
            width = 10, height = 10)
     
   }
 }
-names(fig_waffle_personas_vacunadas) <- names(panel_vacunas_global)
+names(fig_waffle_personas_vacunadas) <- panel_vacunas$ES$fechas
 
 
 
@@ -1344,7 +1343,7 @@ saveGIF({
     print(fig_waffle_personas_vacunadas[[i]])
     
   }},
-  movie.name = "./gif_personas_vacunadas.gif",
+  movie.name = "./gif_waffle_personas_vacunadas.gif",
   ani.height = 700, ani.width = 700)
 
 

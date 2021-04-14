@@ -1,38 +1,24 @@
-library(sf)
-library(mapSpain)
-library(readr)
-library(dplyr)
-library(glue)
-library(ggplot2)
-library(ggtext)
-library(ragg)
 
 
-# load Spain vaccination data
-esp_data <- read.csv("./day01.csv", sep = ";", dec = ",")
+# Cargamos datos de vacunación de España
+datos_esp <- read.csv("./EXPORTADO/POR_CCAA/datos_ES.csv",
+                      stringsAsFactors = TRUE)
 
-# load map of Spain
-sf_spain <- esp_get_ccaa() %>%
-  st_transform(crs = 25830) # %>%
-  # # Exclude Canary Islands for plotting - remove this to include
+# Cargamos mapa de españa
+sf_spain <- esp_get_ccaa() %>% st_transform(crs = 25830) # %>%
+  # Si queremos excluir islas:
   # filter(ine.ccaa.name != "Canarias")
 
-# Create grid
-# need to set seed for reproducibility
+# Creamos grid (generamos n_grid cuadrados aleatorios)
+n_grid <- 200000
 set.seed(1234)
-r <-
-  st_sample(sf_spain,
-            size = 200000,
-            # Number of cells - increase for more definition. May take a long time, reduce for testing
-            type = "regular",
-            exact = TRUE)
+grid_generado <-
+  st_sample(sf_spain, size = n_grid, # Nº de celdas (definición)
+            type = "regular", exact = TRUE)
 
-
-# Turn grid object to data.frame
-esp_tiles <- r %>%
-  st_coordinates() %>%
+# Convertimos grid en data.frame
+esp_tiles <- grid_generado %>% st_coordinates() %>%
   as.data.frame()
-
 colnames(esp_tiles) <- c("x", "y")
 
 esp_tiles <- esp_tiles %>%
@@ -41,13 +27,12 @@ esp_tiles <- esp_tiles %>%
   mutate(id = 1:nrow(.),
          group_name = as.factor(
            case_when(
-             id <= nrow(.) * esp_data$percent_second ~ "second",
-             id >= nrow(.) * esp_data$percent_second &
-               id <= nrow(.) * esp_data$percent_first ~ "first",
+             id <= nrow(.) * datos_esp$porc_personas_pauta_completa ~ "second",
+             id >= nrow(.) * datos_esp$porc_personas_pauta_completa &
+               id <= nrow(.) * datos_esp$porc_personas_vacunadas ~ "first",
              TRUE ~ "nonvac"
            )
          ))
-
 
 # Identify percent labels as y-axis
 id_to_filter <- data.frame(
@@ -67,7 +52,7 @@ id_to_filter <- data.frame(
 pct_labels <- inner_join(esp_tiles, id_to_filter) %>%
   filter(!is.na(point_to_label)) %>%
   mutate(
-    start_line = min(esp_tiles$x) - 200000,
+    start_line = min(esp_tiles$x) - n_grid,
     # We want the line to end a little before the shape of the map, which means where X is at minimum.
     # The 0 is a place holder for the first value
     end_line = with(esp_tiles[esp_tiles$y %in% .$y, ], tapply(x, y, min)) + 5000,
