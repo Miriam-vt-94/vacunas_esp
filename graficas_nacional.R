@@ -740,12 +740,12 @@ htmlwidgets::saveWidget(fig_vacunados,
 
 fig_vacunados_diarios <- plot_ly(type = "bar")
 
-
 # Vacunados totales
 fig_vacunados_diarios <-
   fig_vacunados_diarios %>%
   add_trace(x = panel_vacunas$ES$fechas,
-            y = panel_vacunas$ES$personas_1dosis_diarias,
+            y = panel_vacunas$ES$dosis_diarias_admin -
+              2 * panel_vacunas$ES$personas_pauta_completa_diarias,
             type = "bar", name = "Vacunados diarios (1 dosis)",
             marker = list(color = "rgba(234, 140, 115, 1)"), # Color
             hovertemplate = # Info HTML al pasar el ratón
@@ -811,8 +811,8 @@ fig_vacunados_diarios <- fig_vacunados_diarios %>%
 
 # Guardamos
 htmlwidgets::saveWidget(fig_vacunados_diarios,
-                        file = paste0("./GRAFICAS_HTML/",
-                                      "fig_vacunados_diarios.html"),
+                        file = paste0("./GRAFICAS/NACIONALES/",
+                                      "vacunados_diarios.html"),
                         selfcontained = TRUE)
 
 
