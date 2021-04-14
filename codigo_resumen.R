@@ -147,13 +147,13 @@ cat("--> fig_dosis_entregadas_diarias_vertical_sin_huecos\n")
 cat("4. Dosis entregadas acum. [barras horizontales]\n")
 cat("--> fig_dosis_entregadas_horizontal\n")
 #
-cat("5. Dosis admin. acum. [barras horizontales + relleno + tendencia]\n")
+cat("5. Dosis admin. acum. [barras verticales + relleno + tendencia]\n")
 cat("--> fig_dosis_admin_vertical\n")
+cat("6. Dosis admin. diarias [barras verticales]\n")
+cat("--> fig_admin_diarias\n")
 #
-cat("6. Personas vacunadas acum. [barras horizontales + línea tendencia]\n")
+cat("7. Personas vacunadas acum. [barras verticales + línea tendencia]\n")
 cat("--> fig_vacunados\n")
-cat("7. Personas vacunadas diarios [barras horizontales]\n")
-cat("--> fig_vacunados_diarios\n")
 #
 cat("8. Dosis entregadas acum. por farma [diagrama de rosa]\n")
 cat("--> fig_dosis_entregadas_rosa\n")

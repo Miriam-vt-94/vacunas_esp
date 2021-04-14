@@ -685,7 +685,7 @@ for (i in 1:length(panel_vacunas)) {
   panel_vacunas[[i]]$dosis_7D_entrega_100hab <-
     round(100 * panel_vacunas[[i]]$dosis_7D_entrega /
             panel_vacunas[[i]]$poblacion, 3)
-  
+
   # Dosis admin diarias
   panel_vacunas[[i]]$dosis_diarias_admin <-
     c(panel_vacunas[[i]]$dosis_admin[1],
@@ -741,21 +741,13 @@ for (i in 1:length(panel_vacunas)) {
     round(100 * panel_vacunas[[i]]$personas_pauta_completa_7D /
             panel_vacunas[[i]]$poblacion_mayor_16a, 3)
   
-  # Personas solo una dosis
-  panel_vacunas[[i]]$personas_1dosis_diarias <-
-    c(panel_vacunas[[i]]$personas_1dosis[1],
-      diff(panel_vacunas[[i]]$personas_1dosis))
-  panel_vacunas[[i]]$personas_1dosis_7D <-
-    c(panel_vacunas[[i]]$personas_1dosis[1:7],
-      diff(panel_vacunas[[i]]$personas_1dosis, 7))
-  panel_vacunas[[i]]$porc_personas_1dosis <-
-    round(100 * panel_vacunas[[i]]$personas_1dosis /
-            panel_vacunas[[i]]$poblacion, 3)
-  panel_vacunas[[i]]$porc_personas_1dosis_16a <-
-    round(100 * panel_vacunas[[i]]$personas_1dosis /
-            panel_vacunas[[i]]$poblacion_mayor_16a, 3)
-  
-
+  # Dosis admin diarias primera/segunda dosis
+  panel_vacunas[[i]]$dosis_diarias_primera <- 
+    panel_vacunas[[i]]$dosis_diarias_admin -
+    panel_vacunas[[i]]$personas_pauta_completa_diarias
+  panel_vacunas[[i]]$dosis_diarias_segunda <- 
+    panel_vacunas[[i]]$personas_pauta_completa_diarias
+ 
 }
 
 
@@ -863,26 +855,26 @@ for (i in 1:length(panel_vacunas)) {
            "porc_admin_vs_total",
            # Dosis admin diarias
            "dosis_diarias_admin", "dosis_diarias_admin_100hab",
-           "crec_diario_dosis_admin", 
+           "crec_diario_dosis_admin", "dosis_diarias_primera",
+           "dosis_diarias_segunda",
            # Dosis admin 7D
            "dosis_7D_admin", 
            "dosis_7D_admin_100hab", "crec_7D_dosis_admin",
            "porc_admin_vs_total_7D",
            # Personas vacunadas
-           "personas_vacunadas", "personas_1dosis", "personas_pauta_completa",
+           "personas_vacunadas", "personas_pauta_completa", "personas_1dosis",
            "porc_personas_vacunadas", "porc_personas_pauta_completa",
-           "porc_personas_1dosis", "porc_personas_vacunadas_16a",
-           "porc_personas_pauta_completa_16a", "porc_personas_1dosis_16a",
+           "porc_personas_vacunadas_16a",  "porc_personas_pauta_completa_16a",
            # Personas vacunadas diarias
            "personas_vacunadas_diarias",
            "personas_pauta_completa_diarias", "porc_personas_vacunadas_diarias",
-           "porc_personas_pauta_completa_diarias", "personas_1dosis_diarias", 
+           "porc_personas_pauta_completa_diarias",
            # Personas vacunadas 7D
            "personas_vacunadas_7D",
            "personas_pauta_completa_7D", "porc_personas_vacunadas_7D",
            "porc_personas_pauta_completa_7D",
            "porc_personas_vacunadas_16a_7D",
-           "porc_personas_pauta_completa_16a_7D", "personas_1dosis_7D",
+           "porc_personas_pauta_completa_16a_7D",
            # Crecimientos y desviaciones
            "crec_diario_personas_vacunadas", "crec_7D_personas_vacunadas",
            "crec_diario_personas_pauta_completa",
