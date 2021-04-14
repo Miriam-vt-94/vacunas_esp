@@ -15,24 +15,12 @@ if(!require(lubridate)) install.packages("lubridate", repos = repos)
 if(!require(textreadr)) install.packages("textreadr", repos = repos)
 if(!require(plotly)) install.packages("plotly", repos = repos)
 if(!require(RColorBrewer)) install.packages("RColorBrewer", repos = repos)
-
-
-# #####################
-# CABECERA
-# #####################
-rm(list = ls()) # Limpiamos variables
-assign("last.warning", NULL, envir = baseenv()) # Limpiamos warnings
-options(warn = -1) # Desactivamos warnings
-setwd(dirname(rstudioapi::getSourceEditorContext()$path)) # Fijamos directorio
-
-# Cargamos librerías y paquetes
-repos <- "http://cran.us.r-project.org"
-if(!require(pdftools)) install.packages("pdftools", repos = repos)
-if(!require(tidyverse)) install.packages("tidyverse", repos = repos)
-if(!require(lubridate)) install.packages("lubridate", repos = repos)
-if(!require(textreadr)) install.packages("textreadr", repos = repos)
-if(!require(plotly)) install.packages("plotly", repos = repos)
-if(!require(RColorBrewer)) install.packages("RColorBrewer", repos = repos)
+if(!require(waffle)) install.packages("waffle", repos = repos)
+if(!require(emojifont)) install.packages("emojifont", repos = repos)
+if(!require(extrafont)) install.packages("extrafont", repos = repos)
+if(!require(gganimate)) install.packages("gganimate", repos = repos)
+if(!require(animation)) install.packages("animation", repos = repos)
+if(!require(imputeTS)) install.packages("imputeTS", repos = repos)
 
 
 # ##################################################
@@ -51,30 +39,29 @@ fechas <-
           fechas_descargadas)
 pdf_nuevo <- pdf_bruto # los antiguos
 nombres <- names(pdf_bruto) # los antiguos
-idx_aux <- 1
-for (i in 1:length(fechas)) {
-  
-  # Con tryCatch, la orden se ejecuta y sigue el proceso aunque
-  # devuelva error (que lo marcamos con un -1)
-  url_vacunas <-
-    paste0("https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/",
-           "alertasActual/nCov/documentos/Informe_GIV_comunicacion_",
-           format(as.Date(fechas[i]), "%Y%m%d"), ".pdf")
-  
-  intento_pdf <-
-    tryCatch(read_pdf(url_vacunas), error = function(e) { -1 })
-  
-  # Si devuelve error, será un numeric
-  # Si lo ha leído bien, lo guarda como una lista la metainfo
-  if (typeof(intento_pdf) == "list") {
-    
-    # Guardamos fecha que ha leído, lo vamos añadiendo a una lista
-    nombres <- c(nombres, as.character(fechas[i]))
-    pdf_nuevo[[idx_aux + length(pdf_bruto)]] <- intento_pdf
-    idx_aux <- idx_aux + 1
-    
-  }
-}
+
+# Lista de posibles url (vacunas)
+url_vacunas <-
+  paste0("https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/",
+         "alertasActual/nCov/documentos/Informe_GIV_comunicacion_",
+         format(as.Date(fechas), "%Y%m%d"), ".pdf")
+
+# Con tryCatch, la orden se ejecuta y sigue el proceso aunque
+# devuelva error (que lo marcamos con un -1)
+intento_pdf <- # lista
+  sapply(url_vacunas,
+         FUN = function(x) { tryCatch(read_pdf(x),
+                                      error = function(e) { -1 }) })
+
+# Me quedo solo con los que hayan sido bien leídos
+# Si deuelve error, será un numeric
+# Si lo ha leído bien, lo guarda como una lista la metainfo
+idx_leidos <- which(intento_pdf %>% map(typeof) == "list")
+pdf_leido <- intento_pdf[idx_leidos]
+
+# Añado nombres
+nombres <- c(nombres, as.character(fechas[idx_leidos]))
+pdf_nuevo <- append(pdf_nuevo, pdf_leido)
 names(pdf_nuevo) <- nombres
 
 # Añadimos
@@ -91,46 +78,41 @@ ccaa <-
                  "CANTABRIA", "CASTILLA Y LEÓN", "CASTILLA-LA MANCHA",
                  "CATALUNYA", "C. VALENCIANA", "EXTREMADURA",
                  "GALICIA", "LA RIOJA", "C. MADRID", "REGIÓN DE MURCIA",
-                 "NAVARRA", "EUSKADI", "CEUTA", "MELILLA"),
+                 "NAVARRA", "EUSKADI", "CEUTA", "MELILLA", "FFAA", "ESPAÑA"),
              "ISO" = c("AN", "AR", "AS", "IB", "CN", "CB", "CL", "CM",
                        "CT", "VC", "EX", "GA", "RI", "MD", "MC", "NC",
-                       "PV", "CE", "ML"))
+                       "PV", "CE", "ML", "FFAA", "ES"))
 
 # Poblacion por edad y ccaa
 poblacion_ccaa_edad <-
-  read.csv(file = "./DATOS/poblacion_INE_ccaa_edad.csv")
+  read.csv(file = "./DATOS/poblacion_INE_ccaa_edad.csv", sep = ";",
+           stringsAsFactors = FALSE)
 poblacion <-
   data.frame("ISO" = names(poblacion_ccaa_edad)[-(1:2)],
              "poblacion" =
                colSums(poblacion_ccaa_edad[-dim(poblacion_ccaa_edad)[1],
                                            -(1:2)]),
-             "poblacion_mayor_16a" =  # Incluyendo los 16 años
+             "poblacion_mayor_16a" = # Incluyendo los 16 años
                colSums(poblacion_ccaa_edad[-c(0:16,
                                               dim(poblacion_ccaa_edad)[1]),
-                                           -(1:2)]),
-             "poblacion_mayor_18a" = # Incluyendo los 18 años
-               colSums(poblacion_ccaa_edad[-c(0:18,
-                                              dim(poblacion_ccaa_edad)[1]),
                                            -(1:2)]))
-poblacion$porc_pobl_total <- 100 * poblacion$poblacion / sum(poblacion$poblacion)
-poblacion$porc_pobl_total_mayor_16a <-
-  100 * poblacion$poblacion_mayor_16a / sum(poblacion$poblacion_mayor_16a)
-poblacion$porc_pobl_total_mayor_18a <-
-  100 * poblacion$poblacion_mayor_18a / sum(poblacion$poblacion_mayor_18a)
+poblacion$porc_pobl_total <- 100 * poblacion$poblacion /
+  sum(poblacion$poblacion)
+poblacion$porc_pobl_total_mayor_16a <- 100 * poblacion$poblacion_mayor_16a /
+  sum(poblacion$poblacion_mayor_16a)
 poblacion[, -1] <- round(poblacion[, -1], 3)
+
+
 
 # ########################
 # RESUMEN
 # ########################
 
 # Cálculo de datos por fecha
-source("./datos_por_fecha.R")
-
-# Cálculo resumen global España
-source("./resumen_global.R")
-
-# Cálculo de datos por ccaa
 source("./datos_por_ccaa.R")
+
+# Cálculo de datos por fecha
+source("./datos_por_fecha.R")
 
 
 # ########################
@@ -149,27 +131,43 @@ source("./graficas_nacional.R")
 # Lectura de horas de subida de los pdf
 source("./meta_info.R")
 
+# ######################
+# RESUMEN DE GRÁFICAS
+# ######################
 
 
 cat("\n\n ======================\n")
 cat("GRÁFICAS CREADAS:\n")
 cat("1. Dosis entregadas acum. [barras verticales]\n")
 cat("--> fig_dosis_entregadas_vertical\n")
-cat("2. Dosis entregadas diarias [barras verticales]\n")
+cat("2. Dosis entregadas diarias con huecos vacíos [barras verticales]\n")
 cat("--> fig_dosis_entregadas_diarias_vertical\n")
-cat("3. Dosis entregadas acum. [barras horizontales]\n")
+cat("3. Dosis entregadas diarias sin huecos vacíos [barras verticales]\n")
+cat("--> fig_dosis_entregadas_diarias_vertical_sin_huecos\n")
+cat("4. Dosis entregadas acum. [barras horizontales]\n")
 cat("--> fig_dosis_entregadas_horizontal\n")
-cat("4. Dosis admin. acum. [barras horizontales + relleno + tendencia]\n")
+#
+cat("5. Dosis admin. acum. [barras horizontales + relleno + tendencia]\n")
 cat("--> fig_dosis_admin_vertical\n")
-cat("5. Personas vacunadas acum. [barras horizontales + línea tendencia]\n")
+#
+cat("6. Personas vacunadas acum. [barras horizontales + línea tendencia]\n")
 cat("--> fig_vacunados\n")
-cat("6. Dosis entregadas acum. por farma [diagrama de rosa]\n")
+cat("7. Personas vacunadas diarios [barras horizontales]\n")
+cat("--> fig_vacunados_diarios\n")
+#
+cat("8. Dosis entregadas acum. por farma [diagrama de rosa]\n")
 cat("--> fig_dosis_entregadas_rosa\n")
-cat("7. Dosis admin (general vs pauta completa) [diagrama de rosa]\n")
+cat("9. Dosis admin (general vs pauta completa) [diagrama de rosa]\n")
 cat("--> fig_dosis_admin_rosa\n")
-cat("8. Personas vacunadas (1 dosis vs 2 dosis) [diagrama de rosa]\n")
+cat("10. Personas vacunadas (1 dosis vs 2 dosis) [diagrama de rosa]\n")
 cat("--> fig_personas_vacunadas_rosa\n\n")
-
+#
+cat("11. Dosis entregadas acum. por farma [gráfico de gofre + animación]\n")
+cat("--> fig_waffle_dosis_entregadas[[i]] para la fecha i\n\n")
+cat("12. Dosis administradas acum. por hab. [gráfico de gofre + animación]\n")
+cat("--> fig_waffle_dosis_admin[[i]] para la fecha i\n\n")
+cat("13. Personas vacunadas acum. [gráfico de gofre + animación]\n")
+cat("--> fig_waffle_personas_vacunadas[[i]] para la fecha i\n\n")
 # ################
 # GITHUB
 # ################

@@ -11,6 +11,7 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path)) # Fijamos directorio
 repos <- "http://cran.us.r-project.org"
 if(!require(pdftools)) install.packages("pdftools", repos = repos)
 if(!require(tidyverse)) install.packages("tidyverse", repos = repos)
+if(!require(purrr)) install.packages("purrr", repos = repos)
 if(!require(lubridate)) install.packages("lubridate", repos = repos)
 if(!require(textreadr)) install.packages("textreadr", repos = repos)
 # if(!require(rvest)) install.packages("rvest", repos = repos)
