@@ -583,6 +583,7 @@ fechas_ausentes <- which(!(seq_fechas %in% panel_vacunas$ES$fechas))
 aux <- list()
 for (i in 1:length(ccaa$ISO)) {
   
+  # Completamos lo demográfico
   aux[[i]] <- data.frame()
   for (j in 1:length(seq_fechas)) {
     if (j %in% fechas_ausentes) {
@@ -612,6 +613,7 @@ for (i in 1:length(ccaa$ISO)) {
     na_interpolation(aux[[i]]$dosis_entrega_astra)
   aux[[i]]$dosis_entrega <- aux[[i]]$dosis_entrega_pfizer +
     aux[[i]]$dosis_entrega_moderna + aux[[i]]$dosis_entrega_astra
+
   
   # En admin: NA interpolado
   aux[[i]]$dosis_admin <- round(na_interpolation(aux[[i]]$dosis_admin))
@@ -632,6 +634,12 @@ for (i in 1:length(ccaa$ISO)) {
   aux[[i]]$porc_personas_vacunadas <-
     round(100 * aux[[i]]$personas_vacunadas /
             aux[[i]]$poblacion, 3)
+  aux[[i]]$porc_personas_pauta_completa_16a <-
+    round(100 * aux[[i]]$personas_pauta_completa /
+            aux[[i]]$poblacion_mayor_16a, 3)
+  aux[[i]]$porc_personas_vacunadas_16a <-
+    round(100 * aux[[i]]$personas_vacunadas /
+            aux[[i]]$poblacion_mayor_16a, 3)
 
   # Demografía sin NA
   aux[[i]]$ISO<- as.character(unique(aux[[i]]$ISO))
@@ -644,6 +652,20 @@ for (i in 1:length(ccaa$ISO)) {
     as.numeric(unique(aux[[i]]$porc_pobl_total_mayor_16a))
 }
 names(aux) <- names(panel_vacunas)
+
+# Volvemos a completar % que dependen del total
+for (i in 1:length(ccaa$ISO)) {
+ 
+  aux[[i]]$porc_entregadas_sobre_total <-
+    round(100 * aux[[i]]$dosis_entrega / aux$ES$dosis_entrega, 3)
+  aux[[i]]$porc_admin_sobre_ccaa <-
+    round(100 * aux[[i]]$dosis_admin / aux[[i]]$dosis_entrega, 3)
+  aux[[i]]$desv_dosis_entrega <- 
+    round(100 * (aux[[i]]$porc_entregadas_sobre_total /
+                   aux[[i]]$porc_pobl_total - 1), 3)
+  aux[[i]]$desv_dosis_entrega[aux[[i]]$dosis_entrega == 0] <- NA
+
+}
 
 # Guardamos
 panel_vacunas <- aux

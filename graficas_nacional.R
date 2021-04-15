@@ -507,7 +507,9 @@ fig_dosis_admin_acum <-
               paste0("<b>Dosis admin. acum.",
                      "</b><extra></extra><br>",
                      "a fecha de %{x}: ",
-                     panel_vacunas$ES$dosis_admin))
+                     panel_vacunas$ES$dosis_admin, "<br>",
+                     "<b>Dosis admin. acum.</b> (1ª dosis): ",
+                     panel_vacunas$ES$dosis_primera))
 
 
 # Ajustes globales de la gráfica
@@ -1101,252 +1103,264 @@ htmlwidgets::saveWidget(fig_personas_vacunadas_rosa,
                         selfcontained = TRUE)
 
 
+
+
 # #############################################
 # 11. WAFFLE: DOSIS ENTREGADAS
 # #############################################
 
-# Número de cuadrados
-n_cuadrados <- 200
-
-# Ya generados
-waffle_generados <-
-  gsub("waffle_dosis_entregadas_", "",
-       gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
-# Un gráfico por fecha
-fig_waffle_dosis_entregadas <- list()
-for (i in 1:length(panel_vacunas$ES$fechas)) {
+if (gofres) {
   
-  proporciones <- c()
-  proporciones[1] <- panel_vacunas$ES$dosis_entrega_pfizer[i] /
-    panel_vacunas$ES$dosis_entrega[i]
-  proporciones[2] <- panel_vacunas$ES$dosis_entrega_moderna[i] /
-    panel_vacunas$ES$dosis_entrega[i]
-  proporciones[3] <- panel_vacunas$ES$dosis_entrega_astra[i] /
-    panel_vacunas$ES$dosis_entrega[i]
-  names(proporciones) <- c("Pfizer", "Moderna", "AstraZeneca")
+  cat("\n Generando gofres...\n")
+  # Número de cuadrados
+  n_cuadrados <- 200
   
-  # Los waffle son ggplot (no plotly) así que deben ser editados como tal
-  fig_waffle_dosis_entregadas[[i]] <-
-    waffle(parts =
-             c(round(proporciones[1:2] * n_cuadrados),
-               "AstraZeneca" =
-                 n_cuadrados - sum(round(proporciones[1:2] * n_cuadrados))),
-           rows = 10, colors = c("#60B2FF", "#4ED2AC", "#E96980")) +
-    ggtitle(paste0("Dosis entregadas (acumuladas) en España (",
-                   format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
-                   ")"),
-            subtitle =
-              paste0("Gráficos elaborados por ",
-                     "Javier Álvarez Liébana (@DadosDeLaplace). ",
-                     "Datos: INE y Ministerio de Sanidad")) +
-    xlab(paste0("Dosis entregadas (cuadrado = 0.5% = ",
-                round(0.005 * panel_vacunas$ES$dosis_entrega[i]),
-                " dosis, columna = 5%)")) +
-    theme(plot.title = element_text(size = 19, face = "bold",
-                                    family = "poppins"),
-          plot.subtitle = element_text(size = 13,
-                                       family = "poppins"),
-          axis.title.x = element_text(size = 15, family = "poppins"),
-          legend.text = element_text(size = 15, family = "poppins"),
-          plot.margin = margin(l = 60))
-
-  # Guardamos
-  if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
+  # Ya generados
+  waffle_generados <-
+    gsub("waffle_dosis_entregadas_", "",
+         gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
+  # Un gráfico por fecha
+  fig_waffle_dosis_entregadas <- list()
+  for (i in 1:length(panel_vacunas$ES$fechas)) {
     
-    ggsave(paste0("./GRAFICAS/GOFRES/waffle_dosis_entregadas_",
-                  panel_vacunas$ES$fechas[i], ".png"),
-           plot = fig_waffle_dosis_entregadas[[i]],
-           width = 10, height = 10)
+    proporciones <- c()
+    proporciones[1] <- panel_vacunas$ES$dosis_entrega_pfizer[i] /
+      panel_vacunas$ES$dosis_entrega[i]
+    proporciones[2] <- panel_vacunas$ES$dosis_entrega_moderna[i] /
+      panel_vacunas$ES$dosis_entrega[i]
+    proporciones[3] <- panel_vacunas$ES$dosis_entrega_astra[i] /
+      panel_vacunas$ES$dosis_entrega[i]
+    names(proporciones) <- c("Pfizer", "Moderna", "AstraZeneca")
     
+    # Los waffle son ggplot (no plotly) así que deben ser editados como tal
+    fig_waffle_dosis_entregadas[[i]] <-
+      waffle(parts =
+               c(round(proporciones[1:2] * n_cuadrados),
+                 "AstraZeneca" =
+                   n_cuadrados - sum(round(proporciones[1:2] * n_cuadrados))),
+             rows = 10, colors = c("#60B2FF", "#4ED2AC", "#E96980")) +
+      ggtitle(paste0("Dosis entregadas (acumuladas) en España (",
+                     format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
+                     ")"),
+              subtitle =
+                paste0("Gráficos elaborados por ",
+                       "Javier Álvarez Liébana (@DadosDeLaplace). ",
+                       "Datos: INE y Ministerio de Sanidad")) +
+      xlab(paste0("Dosis entregadas (cuadrado = 0.5% = ",
+                  round(0.005 * panel_vacunas$ES$dosis_entrega[i]),
+                  " dosis, columna = 5%)")) +
+      theme(plot.title = element_text(size = 19, face = "bold",
+                                      family = "poppins"),
+            plot.subtitle = element_text(size = 13,
+                                         family = "poppins"),
+            axis.title.x = element_text(size = 15, family = "poppins"),
+            legend.text = element_text(size = 15, family = "poppins"),
+            plot.margin = margin(l = 60))
+  
+    # Guardamos
+    if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
+      
+      ggsave(paste0("./GRAFICAS/GOFRES/waffle_dosis_entregadas_",
+                    panel_vacunas$ES$fechas[i], ".png"),
+             plot = fig_waffle_dosis_entregadas[[i]],
+             width = 10, height = 10)
+      
+    }
+  }
+  names(fig_waffle_dosis_entregadas) <- panel_vacunas$ES$fechas
+    
+  
+  # #############################################
+  # WAFFLE: ANIMACIÓN DOSIS ENTREGADAS
+  # #############################################
+  
+  if (animaciones) {
+    ani.options("interval" = 0.2) # 0.2s entre frames
+    saveGIF({
+      for (i in 1:length(fig_waffle_dosis_entregadas)) {
+        
+        print(fig_waffle_dosis_entregadas[[i]])
+        
+      }},
+      movie.name = "./gif_waffle_dosis_entregadas.gif",
+      ani.height = 700, ani.width = 700)
+  
+  }
+  
+  # #############################################
+  # 12. WAFFLE: DOSIS ADMIN
+  # #############################################
+  
+  # Número de cuadrados
+  n_cuadrados <- 200
+  
+  # Ya generados
+  waffle_generados <-
+    gsub("waffle_dosis_admin_", "",
+         gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
+  # Un gráfico por fecha
+  fig_waffle_dosis_admin <- list()
+  for (i in 1:length(panel_vacunas$ES$fechas)) {
+  
+    proporciones <- c()
+    proporciones[1] <-
+      round(panel_vacunas$ES$dosis_admin_100hab[i] * (n_cuadrados / 100))
+    proporciones[2] <-
+      round(n_cuadrados * panel_vacunas$ES$dosis_entrega[i] /
+              panel_vacunas$ES$poblacion[1])
+    proporciones[3] <- n_cuadrados - sum(proporciones)
+    names(proporciones) <- c("Admin. por 100 hab.", "Entregadas por 100 hab.",
+                             "restantes")
+  
+    # Los waffle son ggplot (no plotly) así que deben ser editados como tal
+    fig_waffle_dosis_admin[[i]] <-
+      waffle(parts = proporciones, rows = 10,
+             colors = c("#41B033", "#B29393", "#494949")) +
+      ggtitle(paste0("Dosis entregadas (acumuladas) en España (",
+                     format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
+                     ")"),
+              subtitle =
+                paste0("Gráficos elaborados por ",
+                       "Javier Álvarez Liébana (@DadosDeLaplace). ",
+                       "Datos: INE y Ministerio de Sanidad")) +
+      xlab(paste0("Dosis entregadas (cuadrado = 0.5 dosis/100 hab, ",
+                  "columna = 5 dosis/100 hab)")) +
+      theme(plot.title = element_text(size = 19, face = "bold",
+                                      family = "poppins"),
+            plot.subtitle = element_text(size = 13,
+                                         family = "poppins"),
+            axis.title.x = element_text(size = 15, family = "poppins"),
+            legend.text = element_text(size = 15, family = "poppins"),
+            plot.margin = margin(l = 60))
+  
+    # Guardamos
+    if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
+  
+      ggsave(paste0("./GRAFICAS/GOFRES/waffle_dosis_admin_",
+                    panel_vacunas$ES$fechas[i], ".png"),
+             plot = fig_waffle_dosis_admin[[i]],
+             width = 10, height = 10)
+  
+    }
+  }
+  names(fig_waffle_dosis_admin) <- panel_vacunas$ES$fechas
+  
+  
+  
+  
+  
+  
+    
+  
+  # #############################################
+  # WAFFLE: ANIMACIÓN DOSIS ADMIN
+  # #############################################
+  
+  if (animaciones) {
+    ani.options("interval" = 0.2) # 0.2s entre frames
+    saveGIF({
+      for (i in 1:length(fig_waffle_dosis_admin)) {
+        
+        print(fig_waffle_dosis_admin[[i]])
+        
+      }},
+      movie.name = "./gif_waffle_dosis_admin.gif",
+      ani.height = 700, ani.width = 700)
+  }
+  
+  
+  
+  # #############################################
+  # 13. WAFFLE: PERSONAS VACUNADAS
+  # #############################################
+  
+  # Número de cuadrados
+  n_cuadrados <- 200
+  
+  # Ya generados
+  waffle_generados <- gsub("waffle_personas_vacunadas", "",
+                           gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
+  
+  # Un gráfico por fecha
+  fig_waffle_personas_vacunadas <- list()
+  for (i in 1:length(panel_vacunas$ES$fechas)) {
+    
+    proporciones <- c()
+    proporciones[1] <-
+      round(panel_vacunas$ES$porc_personas_pauta_completa[i] *
+              (n_cuadrados / 100))
+    proporciones[2] <-
+      round((panel_vacunas$ES$porc_personas_vacunadas[i] -
+               panel_vacunas$ES$porc_personas_pauta_completa[i]) *
+              (n_cuadrados / 100))
+    proporciones[3] <-
+      round(n_cuadrados * (1.5e7 / panel_vacunas$ES$poblacion[1]) -
+              sum(proporciones))
+    proporciones[4] <-
+      round(n_cuadrados * (2.5e7 / panel_vacunas$ES$poblacion[1]) -
+              sum(proporciones))
+    proporciones[5] <- round(n_cuadrados * 0.7 - sum(proporciones))
+    proporciones[6] <- n_cuadrados - sum(proporciones)
+    names(proporciones) <-
+      c("Con pauta completa", "Esperando 2ª dosis",
+        "15M con pauta completa (14 de junio)",
+        "25M con pauta completa (19 de julio)",
+        "70% con pauta completa", "Resto de población")
+    
+    # Los waffle son ggplot (no plotly) así que deben ser editados como tal
+    fig_waffle_personas_vacunadas[[i]] <-
+      waffle(parts = proporciones, rows = 10,
+             colors = c("#AA51D9", "#EA8C73", "#66AADF",
+                        "#A3C4B7", "#B4B8BB", "#515151")) +
+      ggtitle(paste0("Personas vacunadas (acumuladas) en España (",
+                     format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
+                     ")"),
+              subtitle =
+                paste0("Gráficos elaborados por ",
+                       "Javier Álvarez Liébana (@DadosDeLaplace). ",
+                       "Datos: INE y Ministerio de Sanidad")) +
+      xlab(paste0("Personas vacunadas (1 cuadrado = 0.5% población, ",
+                  "columna = 5%, 5M = 10%)")) +
+      theme(plot.title = element_text(size = 19, face = "bold",
+                                      family = "poppins"),
+            plot.subtitle = element_text(size = 13,
+                                         family = "poppins"),
+            axis.title.x = element_text(size = 15, family = "poppins"),
+            legend.text = element_text(size = 15, family = "poppins"),
+            plot.margin = margin(l = 60))
+    
+    # Guardamos
+    if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
+      
+      ggsave(paste0("./GRAFICAS/GOFRES/waffle_personas_vacunadas_",
+                    panel_vacunas$ES$fechas[i], ".png"),
+             plot = fig_waffle_personas_vacunadas[[i]],
+             width = 10, height = 10)
+      
+    }
+  }
+  names(fig_waffle_personas_vacunadas) <- panel_vacunas$ES$fechas
+  
+  
+  
+  # #############################################
+  # WAFFLE: ANIMACIÓN VACUNADOS
+  # #############################################
+  
+  if (animaciones) {
+    ani.options("interval" = 0.2) # 0.2s entre frames
+    saveGIF({
+      for (i in 1:length(fig_waffle_personas_vacunadas)) {
+        
+        print(fig_waffle_personas_vacunadas[[i]])
+        
+      }},
+      movie.name = "./gif_waffle_personas_vacunadas.gif",
+      ani.height = 700, ani.width = 700)
   }
 }
-names(fig_waffle_dosis_entregadas) <- panel_vacunas$ES$fechas
   
-
-# #############################################
-# WAFFLE: ANIMACIÓN DOSIS ENTREGADAS
-# #############################################
-
-ani.options("interval" = 0.2) # 0.2s entre frames
-saveGIF({
-  for (i in 1:length(fig_waffle_dosis_entregadas)) {
-    
-    print(fig_waffle_dosis_entregadas[[i]])
-    
-  }},
-  movie.name = "./gif_waffle_dosis_entregadas.gif",
-  ani.height = 700, ani.width = 700)
-
-
-# #############################################
-# 12. WAFFLE: DOSIS ADMIN
-# #############################################
-
-# Número de cuadrados
-n_cuadrados <- 200
-
-# Ya generados
-waffle_generados <-
-  gsub("waffle_dosis_admin_", "",
-       gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
-# Un gráfico por fecha
-fig_waffle_dosis_admin <- list()
-for (i in 1:length(panel_vacunas$ES$fechas)) {
-
-  proporciones <- c()
-  proporciones[1] <-
-    round(panel_vacunas$ES$dosis_admin_100hab[i] * (n_cuadrados / 100))
-  proporciones[2] <-
-    round(n_cuadrados * panel_vacunas$ES$dosis_entrega[i] /
-            panel_vacunas$ES$poblacion[1])
-  proporciones[3] <- n_cuadrados - sum(proporciones)
-  names(proporciones) <- c("Admin. por 100 hab.", "Entregadas por 100 hab.",
-                           "restantes")
-
-  # Los waffle son ggplot (no plotly) así que deben ser editados como tal
-  fig_waffle_dosis_admin[[i]] <-
-    waffle(parts = proporciones, rows = 10,
-           colors = c("#41B033", "#B29393", "#494949")) +
-    ggtitle(paste0("Dosis entregadas (acumuladas) en España (",
-                   format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
-                   ")"),
-            subtitle =
-              paste0("Gráficos elaborados por ",
-                     "Javier Álvarez Liébana (@DadosDeLaplace). ",
-                     "Datos: INE y Ministerio de Sanidad")) +
-    xlab(paste0("Dosis entregadas (cuadrado = 0.5 dosis/100 hab, ",
-                "columna = 5 dosis/100 hab)")) +
-    theme(plot.title = element_text(size = 19, face = "bold",
-                                    family = "poppins"),
-          plot.subtitle = element_text(size = 13,
-                                       family = "poppins"),
-          axis.title.x = element_text(size = 15, family = "poppins"),
-          legend.text = element_text(size = 15, family = "poppins"),
-          plot.margin = margin(l = 60))
-
-  # Guardamos
-  if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
-
-    ggsave(paste0("./GRAFICAS/GOFRES/fig_waffle_dosis_admin_",
-                  panel_vacunas$ES$fechas[i], ".png"),
-           plot = fig_waffle_dosis_admin[[i]],
-           width = 10, height = 10)
-
-  }
-}
-names(fig_waffle_dosis_admin) <- panel_vacunas$ES$fechas
-
-
-
-
-
-
   
-
-# #############################################
-# WAFFLE: ANIMACIÓN DOSIS ADMIN
-# #############################################
-
-ani.options("interval" = 0.2) # 0.2s entre frames
-saveGIF({
-  for (i in 1:length(fig_waffle_dosis_admin)) {
-    
-    print(fig_waffle_dosis_admin[[i]])
-    
-  }},
-  movie.name = "./gif_waffle_dosis_admin.gif",
-  ani.height = 700, ani.width = 700)
-
-
-
-# #############################################
-# 13. WAFFLE: PERSONAS VACUNADAS
-# #############################################
-
-# Número de cuadrados
-n_cuadrados <- 200
-
-# Ya generados
-waffle_generados <- gsub("waffle_personas_vacunadas", "",
-                         gsub(".png", "", dir("./GRAFICAS/GOFRES/")))
-
-# Un gráfico por fecha
-fig_waffle_personas_vacunadas <- list()
-for (i in 1:length(panel_vacunas$ES$fechas)) {
-  
-  proporciones <- c()
-  proporciones[1] <-
-    round(panel_vacunas$ES$porc_personas_pauta_completa[i] *
-            (n_cuadrados / 100))
-  proporciones[2] <-
-    round((panel_vacunas$ES$porc_personas_vacunadas[i] -
-             panel_vacunas$ES$porc_personas_pauta_completa[i]) *
-            (n_cuadrados / 100))
-  proporciones[3] <-
-    round(n_cuadrados * (1.5e7 / panel_vacunas$ES$poblacion[1]) -
-            sum(proporciones))
-  proporciones[4] <-
-    round(n_cuadrados * (2.5e7 / panel_vacunas$ES$poblacion[1]) -
-            sum(proporciones))
-  proporciones[5] <- round(n_cuadrados * 0.7 - sum(proporciones))
-  proporciones[6] <- n_cuadrados - sum(proporciones)
-  names(proporciones) <-
-    c("Con pauta completa", "Esperando 2ª dosis",
-      "15M con pauta completa (14 de junio)",
-      "25M con pauta completa (19 de julio)",
-      "70% con pauta completa", "Resto de población")
-  
-  # Los waffle son ggplot (no plotly) así que deben ser editados como tal
-  fig_waffle_personas_vacunadas[[i]] <-
-    waffle(parts = proporciones, rows = 10,
-           colors = c("#AA51D9", "#EA8C73", "#66AADF",
-                      "#A3C4B7", "#B4B8BB", "#515151")) +
-    ggtitle(paste0("Personas vacunadas (acumuladas) en España (",
-                   format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
-                   ")"),
-            subtitle =
-              paste0("Gráficos elaborados por ",
-                     "Javier Álvarez Liébana (@DadosDeLaplace). ",
-                     "Datos: INE y Ministerio de Sanidad")) +
-    xlab(paste0("Personas vacunadas (1 cuadrado = 0.5% población, ",
-                "columna = 5%, 5M = 10%)")) +
-    theme(plot.title = element_text(size = 19, face = "bold",
-                                    family = "poppins"),
-          plot.subtitle = element_text(size = 13,
-                                       family = "poppins"),
-          axis.title.x = element_text(size = 15, family = "poppins"),
-          legend.text = element_text(size = 15, family = "poppins"),
-          plot.margin = margin(l = 60))
-  
-  # Guardamos
-  if (!(panel_vacunas$ES$fechas[i] %in% waffle_generados)) {
-    
-    ggsave(paste0("./GRAFICAS/GOFRES/waffle_personas_vacunadas_",
-                  panel_vacunas$ES$fechas[i], ".png"),
-           plot = fig_waffle_personas_vacunadas[[i]],
-           width = 10, height = 10)
-    
-  }
-}
-names(fig_waffle_personas_vacunadas) <- panel_vacunas$ES$fechas
-
-
-
-# #############################################
-# WAFFLE: ANIMACIÓN VACUNADOS
-# #############################################
-
-ani.options("interval" = 0.2) # 0.2s entre frames
-saveGIF({
-  for (i in 1:length(fig_waffle_personas_vacunadas)) {
-    
-    print(fig_waffle_personas_vacunadas[[i]])
-    
-  }},
-  movie.name = "./gif_waffle_personas_vacunadas.gif",
-  ani.height = 700, ani.width = 700)
-
-
 
 
 

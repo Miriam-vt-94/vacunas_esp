@@ -21,7 +21,6 @@ if(!require(extrafont)) install.packages("extrafont", repos = repos)
 if(!require(gganimate)) install.packages("gganimate", repos = repos)
 if(!require(animation)) install.packages("animation", repos = repos)
 if(!require(imputeTS)) install.packages("imputeTS", repos = repos)
-
 if(!require(sf)) install.packages("sf", repos = repos)
 if(!require(mapSpain)) install.packages("mapSpain", repos = repos)
 if(!require(readr)) install.packages("readr", repos = repos)
@@ -31,6 +30,11 @@ if(!require(ggplot2)) install.packages("ggplot2", repos = repos)
 if(!require(ggtext)) install.packages("ggtext", repos = repos)
 if(!require(ragg)) install.packages("ragg", repos = repos)
 
+
+
+# ---------
+animaciones <- FALSE # poner TRUE si se quieren generar animaciones
+gofres <- FALSE # poner TRUE si se quieren generar gofres
 
 # ##################################################
 # DESCARGA PDF DE VACUNAS + CARGA DE DATOS
@@ -177,6 +181,32 @@ cat("12. Dosis administradas acum. por hab. [gráfico de gofre + animación]\n")
 cat("--> fig_waffle_dosis_admin[[i]] para la fecha i\n\n")
 cat("13. Personas vacunadas acum. [gráfico de gofre + animación]\n")
 cat("--> fig_waffle_personas_vacunadas[[i]] para la fecha i\n\n")
+# Resumen
+n_dias <- length(panel_vacunas$ES$dosis_entrega)
+cat(paste0("\nDosis entregadas acum.: ", panel_vacunas$ES$dosis_entrega[n_dias]))
+cat(paste0("\nDosis administradas acum.: ",
+           panel_vacunas$ES$dosis_admin[n_dias],
+           " (", panel_vacunas$ES$porc_admin_sobre_ccaa[n_dias], "%)"))
+cat(paste0("\nDosis administradas por cada 100 hab: ",
+           panel_vacunas$ES$dosis_admin_100hab[n_dias]))
+cat(paste0("\nDosis administradas últimos 7D.: ",
+           panel_vacunas$ES$dosis_7D_admin[n_dias]))
+cat(paste0("\nDosis administradas diarias: ",
+           panel_vacunas$ES$dosis_diarias_admin[n_dias]))
+cat(paste0("\nPersonas vacunadas acum.: ",
+           panel_vacunas$ES$personas_vacunadas[n_dias],
+           " (", panel_vacunas$ES$porc_personas_vacunadas[n_dias],
+           "%, ", panel_vacunas$ES$porc_personas_vacunadas_16a[n_dias],
+           "% \u226516 años)"))
+cat(paste0("\nPersonas vacunadas pauta completa acum.: ",
+           panel_vacunas$ES$personas_pauta_completa[n_dias],
+           " (", panel_vacunas$ES$porc_personas_pauta_completa[n_dias],
+           "%, ", panel_vacunas$ES$porc_personas_pauta_completa_16a[n_dias],
+           "% \u226516 años)"))
+cat(paste0("\nPersonas vacunadas esperando 2ª dosis: ",
+           panel_vacunas$ES$personas_1dosis[n_dias]))
+cat(paste0("\nACTUALIZADO A FECHA DE ",
+           format(max(as.Date(panel_vacunas$ES$fechas)), "%d-%m-%Y"), "\n"))
 # ################
 # GITHUB
 # ################
