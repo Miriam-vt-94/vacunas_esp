@@ -145,7 +145,7 @@ source("./graficas_nacional.R")
 source("./meta_info.R")
 
 # ######################
-# RESUMEN DE GRÁFICAS
+# RESUMEN
 # ######################
 
 

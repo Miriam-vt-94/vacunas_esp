@@ -855,6 +855,58 @@ for (i in 1:length(panel_vacunas)) {
 }
 
 # ##############################
+# FECHAS A FUTURO
+# ##############################
+
+for (i in 1:length(panel_vacunas)) {
+  
+  # 30-50-70% vacunados según ritmo crecimiento vacunados últimos 7D
+  panel_vacunas[[i]]$fecha_30vacunados_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (30 - panel_vacunas$ES$porc_personas_vacunadas) /
+    panel_vacunas$ES$porc_personas_vacunadas_7D
+  panel_vacunas[[i]]$fecha_50vacunados_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (50 - panel_vacunas$ES$porc_personas_vacunadas) /
+    panel_vacunas$ES$porc_personas_vacunadas_7D
+  panel_vacunas[[i]]$fecha_70vacunados_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (70 - panel_vacunas$ES$porc_personas_vacunadas) /
+    panel_vacunas$ES$porc_personas_vacunadas_7D
+  
+  # 30-50-70% pauta completa según ritmo crecimiento inmunizados últimos 7D
+  panel_vacunas[[i]]$fecha_30inmunizados_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (30 - panel_vacunas$ES$porc_personas_pauta_completa) /
+    panel_vacunas$ES$porc_personas_pauta_completa_7D
+  panel_vacunas[[i]]$fecha_50inmunizados_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (50 - panel_vacunas$ES$porc_personas_pauta_completa) /
+    panel_vacunas$ES$porc_personas_pauta_completa_7D
+  panel_vacunas[[i]]$fecha_70inmunizados_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (70 - panel_vacunas$ES$porc_personas_pauta_completa) /
+    panel_vacunas$ES$porc_personas_pauta_completa_7D
+  
+  # 30-50-70% pauta completa >=16a según ritmo
+  # crecimiento inmunizados últimos 7D
+  panel_vacunas[[i]]$fecha_30inmunizados_16a_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (30 - panel_vacunas$ES$porc_personas_pauta_completa_16a) /
+    panel_vacunas$ES$porc_personas_pauta_completa_16a_7D
+  panel_vacunas[[i]]$fecha_50inmunizados_16a_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (50 - panel_vacunas$ES$porc_personas_pauta_completa_16a) /
+    panel_vacunas$ES$porc_personas_pauta_completa_16a_7D
+  panel_vacunas[[i]]$fecha_70inmunizados_16a_ritmo7D <- 
+    panel_vacunas$ES$fechas +
+    7 * (70 - panel_vacunas$ES$porc_personas_pauta_completa_16a) /
+    panel_vacunas$ES$porc_personas_pauta_completa_16a_7D
+  
+   
+}
+
+# ##############################
 # REORDENAMOS COLUMNAS
 # ##############################
 
@@ -908,7 +960,14 @@ for (i in 1:length(panel_vacunas)) {
            "crec_diario_personas_pauta_completa",
            "crec_7D_personas_pauta_completa", "desv_porc_admin_vs_total",
            "desv_dosis_entrega", "desv_porc_personas_vacunadas",
-           "desv_porc_personas_pauta_completa")  
+           "desv_porc_personas_pauta_completa",
+           # Fechas
+           "fecha_30vacunados_ritmo7D", "fecha_50vacunados_ritmo7D",
+           "fecha_70vacunados_ritmo7D",
+           "fecha_30inmunizados_ritmo7D", "fecha_50inmunizados_ritmo7D",
+           "fecha_70inmunizados_ritmo7D",
+           "fecha_30inmunizados_16a_ritmo7D", "fecha_50inmunizados_16a_ritmo7D",
+           "fecha_70inmunizados_16a_ritmo7D")  
 }
 
 
