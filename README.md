@@ -9,13 +9,10 @@ Repositorio con los datos actualizados de vacunas en España (por comunidades au
 
 Además de los códigos `.R` (**ver más abajo como instalar R**) el repositorio proporciona una serie de [archivos resumen exportados](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO) de la campaña de vacunación en formato `.csv` (se pueden abrir con un Excel), para ser usados libremente
 
-### Datos por comunidad autónoma:
+- **DATOS POR COMUNIDAD AUTÓNOMA**: archivos contenidos en la carpeta [POR_CCAA](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_CCAA): se proporciona un archivo por cada comunidad autónoma (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)), que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por fecha**.
 
-Archivos contenidos en la carpeta [POR_CCAA](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_CCAA): se proporciona un archivo por cada comunidad autónoma (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)), que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por fecha**.
+- **DATOS POR FECHA**: archivos contenidos en la carpeta [POR_FECHAS](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_FECHAS): se proporciona un archivo por cada fecha, que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por comunidad autónoma** (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)).
 
-### Datos por fecha:
-
-Archivos contenidos en la carpeta [POR_FECHAS](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_FECHAS): se proporciona un archivo por cada fecha, que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por comunidad autónoma** (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)).
 
 ### Datos exportados en .RData:
 
