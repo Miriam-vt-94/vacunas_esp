@@ -7,22 +7,22 @@ Repositorio con los datos actualizados de vacunas en España (por comunidades au
 
 ## DATOS EXPORTADOS
 
-Además de los códigos `.R` (**ver más abajo como instalar R**) el repositorio proporciona una serie de [archivos resumen exportados](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO) de la campaña de vacunación en formato `.csv` (se pueden abrir con un Excel), para ser usados libremente
+Además de los códigos `.R` (**ver más abajo como instalar R**) el repositorio proporciona una serie de [archivos resumen exportados](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO) de la campaña de vacunación en formato `.csv` (se pueden abrir con un Excel), para ser usados libremente (ver más abajo la [descripción de las variables](https://github.com/JavierAlvarezLiebana/vacunas_esp#descripcion-de-variables))
 
 - **DATOS POR COMUNIDAD AUTÓNOMA**: archivos contenidos en la carpeta [POR_CCAA](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_CCAA): se proporciona un archivo por cada comunidad autónoma (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)), que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por fecha**.
 
 - **DATOS POR FECHA**: archivos contenidos en la carpeta [POR_FECHAS](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_FECHAS): se proporciona un archivo por cada fecha, que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por comunidad autónoma** (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)).
-
 
 ### Datos exportados en .RData:
 
 Además se proporcionan **dos ficheros `.RData` (para ser abiertos con `R`)**
 
 - **panel_vacunas_ccaa.RData** contiene el resumen de la campaña de vacunación en una lista: cada elemento de la lista corresponde a una comunidad autónoma y contiene un `data.frame`  cuyas columnas son las variables, para cada una de las fechas (filas).
-- 
+
 - **panel_vacunas_fecha.RData** contiene el resumen de la campaña de vacunación en una lista: cada elemento de la lista corresponde a una fecha y contiene un `data.frame` cuyas columnas son las variables, para cada una de las comunidades autónomas (filas).
 
-
+## DESCRIPCIÓN DE VARIABLES
+dasda
 
 ## DATOS FUENTE Y DATOS EXPORTADOS
 
