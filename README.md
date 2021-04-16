@@ -10,6 +10,7 @@ Repositorio con los datos actualizados de vacunas en España (por comunidades au
 - [x] Mapa relleno por fecha
 - [ ] Animar mapa
 - [ ] Visualización de datos por comunidad autónoma
+- [ ] Scrappeo y agregación de la página de datos por franjas etarias
 - [ ] Documentación github completa (instalación R y RStudio incluida)
 
 
@@ -33,17 +34,22 @@ Además se proporcionan **dos ficheros `.RData` (para ser abiertos con `R`)**
 
 A continuación se detallan las **variables calculadas para cada fecha y cada comunidad autónoma** (se incluyen **datos de Fuerzas Armadas**, nombradas con el código FFAA):
 
--
--
--
--
--
--
--
--
--
--
--
+- **fechas**: en la variable `fechas` se guarda la fecha en formato `YYYY-MM-DD`
+- **DATOS DEMOGRÁFICOS**: la variable `ISO` guarda el [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)) de cada comunidad autónoma (**código ES** para los datos agregados globales de España), y las variables `poblacion`, `porc_pobl_total`, `poblacion_mayor_16a` y `porc_pobl_total_mayor_16a` contienen la población de cada comunidad (y su peso % respecto a la población total), tanto en la totalidad de los tramos etarios como con las personas con 16 años o más.
+- **DOSIS ENTREGADAS ACUMULADAS**: las variables `dosis_entrega_pfizer`, `dosis_entrega_astra`, `dosis_entrega_moderna` y `dosis_entrega` contienen las dosis entregadas acumuladas por cada una de las farmacéuticas, así como las dosis entregadas totales. La variable `dosis_entrega_100hab` contiene el número de dosis entregadas acumuladas por cada 100 habitantes, mientras que la variable `porc_entregadas_sobre_total` contiene el porcentaje de dosis entregadas a cada región respecto al total de entregadas en España.
+- **DOSIS ENTREGADAS SEMANALES**: variables `dosis_7D_entrega_pfizer`, `dosis_7D_entrega_astra`, `dosis_7D_entrega_moderna` y `dosis_7D_entrega` contienen las dosis entregadas durante los últimos 7 días. La variable `dosis_7D_entrega_100hab` contiene el número de dosis entregadas por cada 100 habitantes durante los últimos 7 días.
+- **DOSIS ENTREGADAS DIARIAS**: variables `dosis_diarias_entrega_pfizer`, `dosis_diarias_entrega_astra`, `dosis_diarias_entrega_moderna` y `dosis_diarias_entrega` contienen las dosis entregadas diarias.
+- **DOSIS ADMINISTRADAS ACUMULADAS**: 
+- **DOSIS ADMINISTRADAS DIARIAS**: 
+- **DOSIS ADMINISTRADAS SEMANALES**: 
+- **PERSONAS VACUNADAS ACUMULADAS**: 
+- **PERSONAS VACUNADAS DIARIAS**: 
+- **PERSONAS SEMANALES**: 
+- **CRECIMIENTOS**: 
+- **DESVIACIONES RELATIVAS**: 
+- **FECHAS DE OBJETIVOS EXTRAPOLADAS**:                     
+   
+ 
 
 
 ## DATOS FUENTE
