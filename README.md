@@ -3,15 +3,39 @@
 [cran]: https://www.r-pkg.org/badges/version/zeallot "green means go!"
 ![alt text][cran]
 
-Repositorio con la actualización de vacunas en España, así como estadísticas y gráficas generadas a partir de ellas
+Repositorio con los datos actualizados de vacunas en España (por comunidades autónomas y por fechas), así como estadísticas y gráficas generadas a partir de ellas
 
-## DATOS FUENTE Y SCRAPPING DE LOS PDF DE SANIDAD
+## DATOS EXPORTADOS
 
-Además de los códigos `.R`, el repositorio proporciona una serie de archivos, tanto datos fuente que se importarán para generar las tablas resumen, como datos exportados.
+Además de los códigos `.R` (**ver más abajo como instalar R**) el repositorio proporciona una serie de [archivos resumen exportados](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO) de la campaña de vacunación en formato `.csv` (se pueden abrir con un Excel), para ser usados libremente
+
+### Datos por comunidad autónoma:
+
+Archivos contenidos en la carpeta [POR_CCAA](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_CCAA): se proporciona un archivo por cada comunidad autónoma (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)), que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por fecha**.
+
+### Datos por fecha:
+
+Archivos contenidos en la carpeta [POR_FECHAS](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_FECHAS): se proporciona un archivo por cada fecha, que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por comunidad autónoma** (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)).
+
+### Datos exportados en .RData:
+
+Además se proporcionan **dos ficheros `.RData` (para ser abiertos con `R`)**
+
+- **panel_vacunas_ccaa.RData** contiene el resumen de la campaña de vacunación en una lista: cada elemento de la lista corresponde a una comunidad autónoma y contiene un `data.frame`  cuyas columnas son las variables, para cada una de las fechas (filas).
+- 
+- **panel_vacunas_fecha.RData** contiene el resumen de la campaña de vacunación en una lista: cada elemento de la lista corresponde a una fecha y contiene un `data.frame` cuyas columnas son las variables, para cada una de las comunidades autónomas (filas).
+
+
+
+## DATOS FUENTE Y DATOS EXPORTADOS
+
+Además de los códigos `.R` (**ver más abajo como instalar R**) el repositorio proporciona una serie de archivos, tanto [DATOS FUENTE](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/DATOS) que se importarán para generar las tablas resumen , como datos exportados.
+
+### PDF DE SANIDAD EN BRUTO GUARDADOS EN RDATA (SCRAPPEADOS)
 
 Dichos archivos se encuentran en la carpeta [DATOS](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/DATOS)
 
-- **pdf_bruto.RData** contiene, en formato `RData`, los [pdf del Miniterio de Sanidad, relativos a la campaña de vacunación](https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/situacionActual.htm) descargados y guardados en formato lista, aún sin procesar para la lectura.
+- **pdf_bruto.RData** contiene, en formato `RData`, los [pdf del Ministerio de Sanidad, relativos a la campaña de vacunación](https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/situacionActual.htm) descargados y guardados en formato lista, aún sin procesar para la lectura.
 
 ```R
 # #####################
@@ -91,7 +115,7 @@ ccaa <-
                        "PV", "CE", "ML"))
 
 ```
-Además de scrapear los PDF de Sanidad que no hayan sido leídos, se genera un pequeño `data.frame` con los nombres y códigos ISO de las comunidades autónomas.
+Además de scrapear los PDF de Sanidad que no hayan sido leídos, se genera un pequeño `data.frame` (tabla de `R`) con los nombres y códigos ISO de las comunidades autónomas.
 
 - **poblacion_INE_ccaa_edad.csv** contiene la población del [último censo del INE](https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=02003.px&L=0) procesada para proporcionar la población de cada edad (de año en año) por cada una de las comunidades autónomas, en formato `nºedades x ccaa`.
 
