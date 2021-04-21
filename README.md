@@ -3,130 +3,76 @@
 [cran]: https://www.r-pkg.org/badges/version/zeallot "green means go!"
 ![alt text][cran]
 
-Repositorio con la actualización de vacunas en España, así como estadísticas y gráficas generadas a partir de ellas
+Repositorio con los datos actualizados de vacunas en España (por comunidades autónomas y por fechas), así como estadísticas y gráficas generadas a partir de ellas
 
-## DATOS FUENTE Y SCRAPPING DE LOS PDF DE SANIDAD
+- [x] Tablas actualizadas con los datos por fecha y comunidad autónoma
+- [x] Gráficas de España
+- [x] Mapa relleno por fecha
+- [ ] Animar mapa
+- [ ] Visualización de datos por comunidad autónoma
+- [ ] Scrappeo y agregación de la página de datos por franjas etarias
+- [ ] Documentación github completa (instalación R y RStudio incluida)
 
-Además de los códigos `.R`, el repositorio proporciona una serie de archivos, tanto datos fuente que se importarán para generar las tablas resumen, como datos exportados.
+
+## DATOS EXPORTADOS
+
+Además de los códigos `.R` (**ver más abajo como instalar R**) el repositorio proporciona una serie de [archivos resumen exportados](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO) de la campaña de vacunación en formato `.csv` (se pueden abrir con un Excel), para ser usados libremente (ver más abajo la [descripción de las variables](https://github.com/JavierAlvarezLiebana/vacunas_esp#descripción-de-variables))
+
+- **DATOS POR COMUNIDAD AUTÓNOMA**: archivos contenidos en la carpeta [POR_CCAA](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_CCAA): se proporciona un archivo por cada comunidad autónoma (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)), que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por fecha**.
+
+- **DATOS POR FECHA**: archivos contenidos en la carpeta [POR_FECHAS](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/EXPORTADO/POR_FECHAS): se proporciona un archivo por cada fecha, que contiene una tabla cuyas **columnas** son las distintas **variables calculadas**, con una **fila por comunidad autónoma** (nombradas con el sufijo correspondiente a su [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)).
+
+### Datos exportados en .RData:
+
+Además se proporcionan **dos ficheros `.RData` (para ser abiertos con `R`)**
+
+- **panel_vacunas_ccaa.RData** contiene el resumen de la campaña de vacunación en una lista: cada elemento de la lista corresponde a una comunidad autónoma y contiene un `data.frame`  cuyas columnas son las variables, para cada una de las fechas (filas).
+
+- **panel_vacunas_fecha.RData** contiene el resumen de la campaña de vacunación en una lista: cada elemento de la lista corresponde a una fecha y contiene un `data.frame` cuyas columnas son las variables, para cada una de las comunidades autónomas (filas).
+
+## DESCRIPCIÓN DE VARIABLES
+
+A continuación se detallan las **variables calculadas para cada fecha y cada comunidad autónoma** (se incluyen **datos de Fuerzas Armadas**, nombradas con el código FFAA):
+
+- **fechas**: en la variable `fechas` se guarda la fecha en formato `YYYY-MM-DD`
+- **DATOS DEMOGRÁFICOS**: la variable `ISO` guarda el [código ISO](https://es.wikipedia.org/wiki/ISO_3166-2:ES)) de cada comunidad autónoma (**código ES** para los datos agregados globales de España), y las variables `poblacion`, `porc_pobl_total`, `poblacion_mayor_16a` y `porc_pobl_total_mayor_16a` contienen la población de cada comunidad (y su peso % respecto a la población total), tanto en la totalidad de los tramos etarios como con las personas con 16 años o más.
+- **DOSIS ENTREGADAS ACUMULADAS**: las variables `dosis_entrega_pfizer`, `dosis_entrega_astra`, `dosis_entrega_moderna` y `dosis_entrega` contienen las dosis entregadas acumuladas por cada una de las farmacéuticas, así como las dosis entregadas totales. La variable `dosis_entrega_100hab` contiene el número de dosis entregadas acumuladas por cada 100 habitantes, mientras que la variable `porc_entregadas_sobre_total` contiene el porcentaje de dosis entregadas a cada región respecto al total de entregadas en España.
+- **DOSIS ENTREGADAS SEMANALES**: variables `dosis_7D_entrega_pfizer`, `dosis_7D_entrega_astra`, `dosis_7D_entrega_moderna` y `dosis_7D_entrega` contienen las dosis entregadas durante los últimos 7 días. La variable `dosis_7D_entrega_100hab` contiene el número de dosis entregadas por cada 100 habitantes durante los últimos 7 días.
+- **DOSIS ENTREGADAS DIARIAS**: variables `dosis_diarias_entrega_pfizer`, `dosis_diarias_entrega_astra`, `dosis_diarias_entrega_moderna` y `dosis_diarias_entrega` contienen las dosis entregadas diarias.
+- **DOSIS ADMINISTRADAS ACUMULADAS**: 
+- **DOSIS ADMINISTRADAS DIARIAS**: 
+- **DOSIS ADMINISTRADAS SEMANALES**: 
+- **PERSONAS VACUNADAS ACUMULADAS**: 
+- **PERSONAS VACUNADAS DIARIAS**: 
+- **PERSONAS SEMANALES**: 
+- **CRECIMIENTOS**: 
+- **DESVIACIONES RELATIVAS**: 
+- **FECHAS DE OBJETIVOS EXTRAPOLADAS**:                     
+   
+ 
+
+
+## DATOS FUENTE
+
+Además de los códigos `.R` (**ver más abajo como instalar R**), datos exportados en `.csv` y gráficos, el repositorio proporciona una serie de archivos, tanto [DATOS FUENTE](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/DATOS) que se importarán para generar las tablas resumen , como datos exportados.
 
 Dichos archivos se encuentran en la carpeta [DATOS](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/DATOS)
 
-- **pdf_bruto.RData** contiene, en formato `RData`, los [pdf del Miniterio de Sanidad, relativos a la campaña de vacunación](https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/situacionActual.htm) descargados y guardados en formato lista, aún sin procesar para la lectura.
-
-```R
-# #####################
-# CABECERA
-# #####################
-rm(list = ls()) # Limpiamos variables
-assign("last.warning", NULL, envir = baseenv()) # Limpiamos warnings
-options(warn = -1) # Desactivamos warnings
-setwd(dirname(rstudioapi::getSourceEditorContext()$path)) # Fijamos directorio
-
-# Cargamos librerías y paquetes
-repos <- "http://cran.us.r-project.org"
-if(!require(pdftools)) install.packages("pdftools", repos = repos)
-if(!require(tidyverse)) install.packages("tidyverse", repos = repos)
-if(!require(lubridate)) install.packages("lubridate", repos = repos)
-if(!require(textreadr)) install.packages("textreadr", repos = repos)
-
-
-# ##################################################
-# DESCARGA PDF DE VACUNAS + CARGA DE DATOS
-# ##################################################
-
-# Cargamos datos ya descargados
-load("./DATOS/pdf_bruto.RData")
-fechas_descargadas <- names(pdf_bruto)
-
-# Secuencia de fechas a leer (ampliar fechas si fuese necesario)
-# le quitamos las fechas ya bajadas
-fechas <-
-  setdiff(as.character(seq(as.Date("2021-01-05"),
-                           as.Date(Sys.time()), by = 1)),
-          fechas_descargadas)
-pdf_nuevo <- pdf_bruto # los antiguos
-nombres <- names(pdf_bruto) # los antiguos
-idx_aux <- 1
-for (i in 1:length(fechas)) {
-  
-  # Con tryCatch, la orden se ejecuta y sigue el proceso aunque
-  # devuelva error (que lo marcamos con un -1)
-  url_vacunas <-
-    paste0("https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/",
-           "alertasActual/nCov/documentos/Informe_GIV_comunicacion_",
-           format(as.Date(fechas[i]), "%Y%m%d"), ".pdf")
-  
-  intento_pdf <-
-    tryCatch(read_pdf(url_vacunas), error = function(e) { -1 })
-  
-  # Si devuelve error, será un numeric
-  # Si lo ha leído bien, lo guarda como una lista la metainfo
-  if (typeof(intento_pdf) == "list") {
-    
-    # Guardamos fecha que ha leído, lo vamos añadiendo a una lista
-    nombres <- c(nombres, as.character(fechas[i]))
-    pdf_nuevo[[idx_aux + length(pdf_bruto)]] <- intento_pdf
-    idx_aux <- idx_aux + 1
-    
-  }
-}
-names(pdf_nuevo) <- nombres
-
-# Añadimos
-pdf_bruto <- pdf_nuevo
-
-# Guardamos
-save(pdf_bruto, file = "./DATOS/pdf_bruto.RData")
-
-# CCAA con sus nombres y códigos ISO
-ccaa <-
-  data.frame("NOMBRES" =
-               c("ANDALUCÍA", "ARAGÓN", "ASTURIAS", "BALEARES", "CANARIAS",
-                 "CANTABRIA", "CASTILLA Y LEÓN", "CASTILLA-LA MANCHA",
-                 "CATALUNYA", "C. VALENCIANA", "EXTREMADURA",
-                 "GALICIA", "LA RIOJA", "C. MADRID", "REGIÓN DE MURCIA",
-                 "NAVARRA", "EUSKADI", "CEUTA", "MELILLA"),
-             "ISO" = c("AN", "AR", "AS", "IB", "CN", "CB", "CL", "CM",
-                       "CT", "VC", "EX", "GA", "RI", "MD", "MC", "NC",
-                       "PV", "CE", "ML"))
-
-```
-Además de scrapear los PDF de Sanidad que no hayan sido leídos, se genera un pequeño `data.frame` con los nombres y códigos ISO de las comunidades autónomas.
+- **pdf_bruto.RData** contiene, en formato `RData`, los [pdf del Ministerio de Sanidad, relativos a la campaña de vacunación](https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/situacionActual.htm) descargados y guardados en formato lista, aún sin procesar para la lectura. Además de **scrapear los PDF de Sanidad que no hayan sido leídos**, se genera un pequeño `data.frame` (tabla de `R`) con los nombres y códigos ISO de las comunidades autónomas.
 
 - **poblacion_INE_ccaa_edad.csv** contiene la población del [último censo del INE](https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=02003.px&L=0) procesada para proporcionar la población de cada edad (de año en año) por cada una de las comunidades autónomas, en formato `nºedades x ccaa`.
 
-```R
 
-# Poblacion por edad y ccaa
-poblacion_ccaa_edad <-
-  read.csv(file = "./DATOS/poblacion_INE_ccaa_edad.csv")
-poblacion <-
-  data.frame("ISO" = names(poblacion_ccaa_edad)[-(1:2)],
-             "poblacion" =
-               colSums(poblacion_ccaa_edad[-dim(poblacion_ccaa_edad)[1],
-                                           -(1:2)]),
-             "poblacion_mayor_16a" =  # Incluyendo los 16 años
-               colSums(poblacion_ccaa_edad[-c(0:16,
-                                              dim(poblacion_ccaa_edad)[1]),
-                                           -(1:2)]),
-             "poblacion_mayor_18a" = # Incluyendo los 18 años
-               colSums(poblacion_ccaa_edad[-c(0:18,
-                                              dim(poblacion_ccaa_edad)[1]),
-                                           -(1:2)]))
-poblacion$porc_pobl_total <- 100 * poblacion$poblacion / sum(poblacion$poblacion)
-poblacion$porc_pobl_total_mayor_16a <-
-  100 * poblacion$poblacion_mayor_16a / sum(poblacion$poblacion_mayor_16a)
-poblacion$porc_pobl_total_mayor_18a <-
-  100 * poblacion$poblacion_mayor_18a / sum(poblacion$poblacion_mayor_18a)
-poblacion[, -1] <- round(poblacion[, -1], 3)
-
-```
-
-### CANAL TELEGRAM
+## DATOS DEL CANAL DE TELEGRAM DE SANIDAD
 
 Los datos en la carpeta [CANAL TELEGRAM](https://github.com/JavierAlvarezLiebana/vacunas_esp/tree/main/DATOS/CANAL_TELEGRAM) se encuentran descargados en html los mensajes enviados por el Ministerio de Sanidad en su [canal de Telegram](https://t.me/sanidadgob)
 
-## CÓDIGOS R
+
+## GRÁFICAS HTML, GOFRES Y MAPAS
+
+
+
+## ¿CÓMO USAR EL CÓDIGO R Y EJECUTARLO?
 
 ### Instalación
 
