@@ -33,6 +33,8 @@
 #    --> fig_waffle_dosis_admin[[i]] para la fecha i
 # 13. Personas vacunadas acum. [gráfico de gofre + animación]
 #    --> fig_waffle_personas_vacunadas[[i]] para la fecha i
+#
+# 14. Mapa relleno [mapa ggplot2]
 # ######################################################
 
 # #####################################################
@@ -1104,9 +1106,8 @@ htmlwidgets::saveWidget(fig_personas_vacunadas_rosa,
 
 
 
-
 # #############################################
-# 11. WAFFLE: DOSIS ENTREGADAS
+# 11. WAFFLES
 # #############################################
 
 if (gofres) {
@@ -1365,3 +1366,11 @@ if (gofres) {
 
 
 
+
+
+
+# #############################################
+# 14. Mapa relleno
+# #############################################
+
+if (mapas) { source("./mapa_relleno.R") }

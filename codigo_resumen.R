@@ -32,10 +32,11 @@ if(!require(ragg)) install.packages("ragg", repos = repos)
 
 
 
-# ---------
-animaciones <- FALSE # poner TRUE si se quieren generar animaciones
-gofres <- FALSE # poner TRUE si se quieren generar gofres
 
+# ---------
+animaciones <- TRUE # poner TRUE si se quieren generar animaciones
+gofres <- TRUE # poner TRUE si se quieren generar gofres
+mapas <- TRUE # TRUE para generar mapas (1ª vez lento, luego solo genera los no creados)
 # ##################################################
 # DESCARGA PDF DE VACUNAS + CARGA DE DATOS
 # ##################################################
@@ -176,11 +177,14 @@ cat("10. Personas vacunadas (1 dosis vs 2 dosis) [diagrama de rosa]\n")
 cat("--> fig_personas_vacunadas_rosa\n\n")
 #
 cat("11. Dosis entregadas acum. por farma [gráfico de gofre + animación]\n")
-cat("--> fig_waffle_dosis_entregadas[[i]] para la fecha i\n\n")
+cat("--> fig_waffle_dosis_entregadas[[i]] para la fecha i\n")
 cat("12. Dosis administradas acum. por hab. [gráfico de gofre + animación]\n")
-cat("--> fig_waffle_dosis_admin[[i]] para la fecha i\n\n")
+cat("--> fig_waffle_dosis_admin[[i]] para la fecha i\n")
 cat("13. Personas vacunadas acum. [gráfico de gofre + animación]\n")
 cat("--> fig_waffle_personas_vacunadas[[i]] para la fecha i\n\n")
+#
+cat("14. Mapa relleno con personas vacunadas [mapa ggplot2\n")
+cat("--> mapa_relleno\n\n")
 # Resumen
 n_dias <- length(panel_vacunas$ES$dosis_entrega)
 cat(paste0("\nDosis entregadas acum.: ", panel_vacunas$ES$dosis_entrega[n_dias]))
@@ -213,6 +217,5 @@ cat(paste0("\nACTUALIZADO A FECHA DE ",
 # git add -A
 # git commit -m "Meta_info"
 # git push
-
 
 

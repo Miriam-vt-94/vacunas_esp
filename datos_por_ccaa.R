@@ -860,7 +860,7 @@ for (i in 1:length(panel_vacunas)) {
 
 for (i in 1:length(panel_vacunas)) {
   
-  # 30-50-70% vacunados según ritmo crecimiento vacunados últimos 7D
+  # 30-50-70% vacunados según ritmo vacunados últimos 7D
   panel_vacunas[[i]]$fecha_30vacunados_ritmo7D <- 
     panel_vacunas$ES$fechas +
     7 * (30 - panel_vacunas$ES$porc_personas_vacunadas) /
@@ -874,7 +874,7 @@ for (i in 1:length(panel_vacunas)) {
     7 * (70 - panel_vacunas$ES$porc_personas_vacunadas) /
     panel_vacunas$ES$porc_personas_vacunadas_7D
   
-  # 30-50-70% pauta completa según ritmo crecimiento inmunizados últimos 7D
+  # 30-50-70% pauta completa según ritmo inmunizados últimos 7D
   panel_vacunas[[i]]$fecha_30inmunizados_ritmo7D <- 
     panel_vacunas$ES$fechas +
     7 * (30 - panel_vacunas$ES$porc_personas_pauta_completa) /
@@ -888,8 +888,7 @@ for (i in 1:length(panel_vacunas)) {
     7 * (70 - panel_vacunas$ES$porc_personas_pauta_completa) /
     panel_vacunas$ES$porc_personas_pauta_completa_7D
   
-  # 30-50-70% pauta completa >=16a según ritmo
-  # crecimiento inmunizados últimos 7D
+  # 30-50-70% pauta completa >=16a según ritmo inmunizados últimos 7D
   panel_vacunas[[i]]$fecha_30inmunizados_16a_ritmo7D <- 
     panel_vacunas$ES$fechas +
     7 * (30 - panel_vacunas$ES$porc_personas_pauta_completa_16a) /
