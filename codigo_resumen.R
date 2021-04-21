@@ -215,7 +215,7 @@ cat(paste0("\nACTUALIZADO A FECHA DE ",
 # GITHUB
 # ################
 # git add -A
-# git commit -m "Meta_info"
+# git commit -m "Actualización"
 # git push
 
 
