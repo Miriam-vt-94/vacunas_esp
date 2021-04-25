@@ -236,3 +236,18 @@ for (i in idx) {
   mapas_guardados[[i]] <- mapa_relleno
 }
 save(mapas_guardados, file = "./GRAFICAS/MAPAS_RELLENOS/mapas_guardados.RData")
+
+if (animaciones) {
+  
+  load("./GRAFICAS/MAPAS_RELLENOS/mapas_guardados.RData")
+  ani.options("interval" = 0.2) # 0.2s entre frames
+  saveGIF({
+    for (i in 1:length(mapas_guardados)) {
+      
+      print(mapas_guardados[[i]])
+      
+    }},
+    movie.name = "./gif_mapa_relleno.gif",
+    ani.height = 850, ani.width = 850)
+  
+}

@@ -112,13 +112,15 @@ for (i in 1:length(ccaa$ISO)) {
   # En estas fechas no había pauta completa y solo había Pfizer
   panel_vacunas[[i]]$dosis_entrega_moderna <-
     panel_vacunas[[i]]$dosis_entrega_astra <-
+    panel_vacunas[[i]]$dosis_entrega_janssen <-
     panel_vacunas[[i]]$personas_pauta_completa <- 0
   
   # Calculamos dosis entregadas en total
   panel_vacunas[[i]]$dosis_entrega <-
     panel_vacunas[[i]]$dosis_entrega_pfizer +
     panel_vacunas[[i]]$dosis_entrega_moderna +
-    panel_vacunas[[i]]$dosis_entrega_astra
+    panel_vacunas[[i]]$dosis_entrega_astra +
+    panel_vacunas[[i]]$dosis_entrega_janssen
   
 }
 names(panel_vacunas) <- ccaa$ISO
@@ -182,11 +184,13 @@ for (i in 1:length(ccaa$ISO)) {
       "dosis_admin", "porc_admin_sobre_ccaa")
   
   # En estas fechas no había pauta completa ni Astra
-  aux$dosis_entrega_astra <- aux$personas_pauta_completa <- 0
+  aux$dosis_entrega_astra <- aux$personas_pauta_completa <- 
+    aux$dosis_entrega_janssen <- 0
   
   # Calculamos dosis entregadas en total
   aux$dosis_entrega <- aux$dosis_entrega_pfizer +
-    aux$dosis_entrega_moderna + aux$dosis_entrega_astra
+    aux$dosis_entrega_moderna + aux$dosis_entrega_astra +
+    aux$dosis_entrega_janssen
   
   # Añadimos
   panel_vacunas[[i]] <- rbind(panel_vacunas[[i]], aux)
@@ -260,11 +264,12 @@ for (i in 1:length(ccaa$ISO)) {
       "dosis_admin", "porc_admin_sobre_ccaa", "personas_pauta_completa")
   
   # En estas fechas ya había pauta completa pero no astra
-  aux$dosis_entrega_astra <-  0
+  aux$dosis_entrega_astra <- aux$dosis_entrega_janssen <- 0
   
   # Calculamos dosis entregadas en total
   aux$dosis_entrega <- aux$dosis_entrega_pfizer +
-    aux$dosis_entrega_moderna + aux$dosis_entrega_astra
+    aux$dosis_entrega_moderna + aux$dosis_entrega_astra +
+    aux$dosis_entrega_janssen
   
   # Añadimos
   panel_vacunas[[i]] <- rbind(panel_vacunas[[i]], aux)
@@ -328,11 +333,12 @@ for (i in 1:length(ccaa$ISO)) {
       "dosis_admin", "porc_admin_sobre_ccaa", "personas_pauta_completa")
   
   # En estas fechas ya había pauta completa pero no astra
-  aux$dosis_entrega_astra <-  0
+  aux$dosis_entrega_astra <- aux$dosis_entrega_janssen <- 0
   
   # Calculamos dosis entregadas en total
   aux$dosis_entrega <- aux$dosis_entrega_pfizer +
-    aux$dosis_entrega_moderna + aux$dosis_entrega_astra
+    aux$dosis_entrega_moderna + aux$dosis_entrega_astra +
+    aux$dosis_entrega_janssen
   
   # Añadimos
   panel_vacunas[[i]] <- rbind(panel_vacunas[[i]], aux)
@@ -393,9 +399,12 @@ for (i in 1:length(ccaa$ISO)) {
       "dosis_entrega_astra", "dosis_entrega", "dosis_admin",
       "porc_admin_sobre_ccaa", "personas_pauta_completa")
   
+  aux$dosis_entrega_janssen <- 0
+  
   # Calculamos dosis entregadas en total
   aux$dosis_entrega <- aux$dosis_entrega_pfizer +
-    aux$dosis_entrega_moderna + aux$dosis_entrega_astra
+    aux$dosis_entrega_moderna + aux$dosis_entrega_astra +
+    aux$dosis_entrega_janssen
   
   # Añadimos
   panel_vacunas[[i]] <- rbind(panel_vacunas[[i]], aux)
@@ -439,9 +448,12 @@ for (i in 1:length(ccaa$ISO)) {
       "dosis_entrega_astra", "dosis_entrega", "dosis_admin",
       "porc_admin_sobre_ccaa", "personas_pauta_completa")
   
+  aux$dosis_entrega_janssen <- 0
+  
   # Calculamos dosis entregadas en total
   aux$dosis_entrega <- aux$dosis_entrega_pfizer +
-    aux$dosis_entrega_moderna + aux$dosis_entrega_astra
+    aux$dosis_entrega_moderna + aux$dosis_entrega_astra +
+    aux$dosis_entrega_janssen
   
   # Añadimos
   panel_vacunas[[i]] <- rbind(panel_vacunas[[i]], aux)
@@ -468,11 +480,11 @@ for (i in 1:length(ccaa$ISO)) {
 
 
 # ###########################
-# Filtramos DESDE 6 ABRIL INCLUIDO y extraemos
+# Filtramos DESDE 6 ABRIL HASTA 21 DE ABRIL INCLUIDO y extraemos
 # ###########################
 fechas_filtro <-
   fechas[fechas %in%
-           seq(as.Date("2021-04-06"), as.Date(Sys.time()), by = 1)]
+           seq(as.Date("2021-04-06"), as.Date("2021-04-21"), by = 1)]
 nombres_ccaa <- ccaa$NOMBRES
 tabla_valores <- # Matriz de nº ccaa x fechas
   filtrado_extraccion_pdf(pdf_bruto, fechas_filtro, nombres_ccaa = nombres_ccaa)
@@ -506,9 +518,70 @@ for (i in 1:length(ccaa$ISO)) {
       "porc_admin_sobre_ccaa", "personas_vacunadas",
       "personas_pauta_completa")
   
+  aux$dosis_entrega_janssen <- 0
+  
   # Calculamos dosis entregadas en total
   aux$dosis_entrega <- aux$dosis_entrega_pfizer +
-    aux$dosis_entrega_moderna + aux$dosis_entrega_astra
+    aux$dosis_entrega_moderna + aux$dosis_entrega_astra +
+    aux$dosis_entrega_janssen
+  
+  # Personas solo 1 dosis
+  aux$personas_1dosis <- aux$personas_vacunadas -
+    aux$personas_pauta_completa
+  
+  # Añadimos
+  panel_vacunas[[i]] <- rbind(panel_vacunas[[i]], aux)
+}
+names(panel_vacunas) <- ccaa$ISO
+
+
+
+
+
+# ###########################
+# Filtramos DESDE 22 ABRIL INCLUIDO y extraemos
+# ###########################
+fechas_filtro <-
+  fechas[fechas %in%
+           seq(as.Date("2021-04-22"), as.Date(Sys.time()), by = 1)]
+nombres_ccaa <- ccaa$NOMBRES
+tabla_valores <- # Matriz de nº ccaa x fechas
+  filtrado_extraccion_pdf(pdf_bruto, fechas_filtro, nombres_ccaa = nombres_ccaa)
+
+for (i in 1:length(ccaa$ISO)) {
+  
+  aux <- str_split(str_split(pattern =
+                               as.character(ccaa$NOMBRES[i]),
+                             tabla_valores[min(i, 21), ]), pattern = " ")
+  aux <- aux %>% map(function(x) { x[x != ""] }) %>%
+    map(gsub, pattern = "%", replacement = "") %>%
+    map(gsub, pattern = "\\.", replacement = "") %>%
+    map(gsub, pattern = ",", replacement = ".") %>%
+    map(as.numeric) %>% map(na.omit)
+  
+  matriz_datos <- t(matrix(unlist(aux), nrow = 9))
+  aux <- data.frame("fechas" = fechas_filtro,
+                    "ISO" = as.character(poblacion$ISO[i]),
+                    "poblacion" = poblacion$poblacion[i],
+                    "porc_pobl_total" = poblacion$porc_pobl_total[i],
+                    "poblacion_mayor_16a" =
+                      poblacion$poblacion_mayor_16a[i],
+                    "porc_pobl_total_mayor_16a" =
+                      poblacion$porc_pobl_total_mayor_16a[i],
+                    matriz_datos)
+  names(aux) <-
+    c("fechas", "ISO", "poblacion", "porc_pobl_total",
+      "poblacion_mayor_16a", "porc_pobl_total_mayor_16a",
+      "dosis_entrega_pfizer", "dosis_entrega_moderna",
+      "dosis_entrega_astra", "dosis_entrega_janssen",
+      "dosis_entrega", "dosis_admin",
+      "porc_admin_sobre_ccaa", "personas_vacunadas",
+      "personas_pauta_completa")
+  
+  # Calculamos dosis entregadas en total
+  aux$dosis_entrega <- aux$dosis_entrega_pfizer +
+    aux$dosis_entrega_moderna + aux$dosis_entrega_astra +
+    aux$dosis_entrega_janssen
   
   # Personas solo 1 dosis
   aux$personas_1dosis <- aux$personas_vacunadas -
@@ -525,6 +598,7 @@ for (i in 1:length(ccaa$ISO)) {
   panel_vacunas[[i]]$porc_entregadas_sobre_total <-
     100 * panel_vacunas[[i]]$dosis_entrega / panel_vacunas$ES$dosis_entrega
 }
+
 
 
 
@@ -611,8 +685,11 @@ for (i in 1:length(ccaa$ISO)) {
     na_interpolation(aux[[i]]$dosis_entrega_moderna)
   aux[[i]]$dosis_entrega_astra <-
     na_interpolation(aux[[i]]$dosis_entrega_astra)
+  aux[[i]]$dosis_entrega_janssen <-
+    na_interpolation(aux[[i]]$dosis_entrega_janssen)
   aux[[i]]$dosis_entrega <- aux[[i]]$dosis_entrega_pfizer +
-    aux[[i]]$dosis_entrega_moderna + aux[[i]]$dosis_entrega_astra
+    aux[[i]]$dosis_entrega_moderna + aux[[i]]$dosis_entrega_astra +
+    aux[[i]]$dosis_entrega_janssen
 
   
   # En admin: NA interpolado
@@ -705,6 +782,9 @@ for (i in 1:length(panel_vacunas)) {
   panel_vacunas[[i]]$dosis_7D_entrega_astra <-
     c(panel_vacunas[[i]]$dosis_entrega_astra[1:7],
       diff(panel_vacunas[[i]]$dosis_entrega_astra, 7))
+  panel_vacunas[[i]]$dosis_7D_entrega_janssen <-
+    c(panel_vacunas[[i]]$dosis_entrega_janssen[1:7],
+      diff(panel_vacunas[[i]]$dosis_entrega_janssen, 7))
 
   # Dosis entregadas por 100 hab
   panel_vacunas[[i]]$dosis_entrega_100hab <-
@@ -919,7 +999,8 @@ for (i in 1:length(panel_vacunas)) {
            "poblacion_mayor_16a", "porc_pobl_total_mayor_16a",
            # Dosis entregadas acumuladas
            "dosis_entrega_pfizer", "dosis_entrega_astra",
-           "dosis_entrega_moderna", "dosis_entrega",
+           "dosis_entrega_moderna", "dosis_entrega_janssen",
+           "dosis_entrega",
            "dosis_entrega_100hab", "porc_entregadas_sobre_total",
            # Dosis entregadas diarias
            "dosis_diarias_entrega_pfizer", "dosis_diarias_entrega_astra",

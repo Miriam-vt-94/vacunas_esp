@@ -77,6 +77,17 @@ fig_dosis_entregadas_vertical <- fig_dosis_entregadas_vertical %>%
                      "</b><extra></extra><br>",
                      "a fecha de %{x}: %{y}"))
 
+# Dosis entregadas de Janssen
+fig_dosis_entregadas_vertical <- fig_dosis_entregadas_vertical %>%
+  add_trace(x = panel_vacunas$ES$fechas,
+            y = panel_vacunas$ES$dosis_entrega_janssen,
+            type = "bar", name = "Janssen",
+            marker = list(color = "rgba(245, 228, 57, 1)"), # Color
+            hovertemplate = # Info HTML al pasar el ratón
+              paste0("<b>Dosis acum. entregadas de Janssen",
+                     "</b><extra></extra><br>",
+                     "a fecha de %{x}: %{y}"))
+
 # Dosis admin
 fig_dosis_entregadas_vertical <- fig_dosis_entregadas_vertical %>%
   add_trace(x = panel_vacunas$ES$fechas,
@@ -177,6 +188,17 @@ fig_dosis_entregadas_diarias_vertical <- fig_dosis_entregadas_diarias_vertical %
             marker = list(color = "rgba(78, 210, 172, 1)"), # Color
             hovertemplate = # Info HTML al pasar el ratón
               paste0("<b>Dosis diarias entregadas de Moderna",
+                     "</b><extra></extra><br>",
+                     "a fecha de %{x}: %{y}"))
+
+# Dosis entregadas de Janssen
+fig_dosis_entregadas_diarias_vertical <- fig_dosis_entregadas_diarias_vertical %>%
+  add_trace(x = panel_vacunas$ES$fechas,
+            y = panel_vacunas$ES$dosis_diarias_entrega_janssen,
+            type = "bar", name = "Janssen",
+            marker = list(color = "rgba(245, 228, 57, 1)"), # Color
+            hovertemplate = # Info HTML al pasar el ratón
+              paste0("<b>Dosis diarias entregadas de Janssen",
                      "</b><extra></extra><br>",
                      "a fecha de %{x}: %{y}"))
 
@@ -283,6 +305,18 @@ fig_dosis_entregadas_diarias_vertical_sin_huecos <-
                      "</b><extra></extra><br>",
                      "a fecha de %{x}: %{y}"))
 
+# Dosis entregadas de Janssen
+fig_dosis_entregadas_diarias_vertical_sin_huecos <-
+  fig_dosis_entregadas_diarias_vertical_sin_huecos %>%
+  add_trace(x = as.character(panel_vacunas$ES$fechas[-idx_sin_entrega]),
+            y = panel_vacunas$ES$dosis_diarias_entrega_janssen[-idx_sin_entrega],
+            type = "bar", name = "Janssen",
+            marker = list(color = "rgba(245, 228, 57, 1)"), # Color
+            hovertemplate = # Info HTML al pasar el ratón
+              paste0("<b>Dosis diarias entregadas de Janssen",
+                     "</b><extra></extra><br>",
+                     "a fecha de %{x}: %{y}"))
+
 # Dosis admin
 fig_dosis_entregadas_diarias_vertical_sin_huecos <-
   fig_dosis_entregadas_diarias_vertical_sin_huecos %>%
@@ -382,6 +416,18 @@ fig_dosis_entregadas_horizontal <-
             marker = list(color = "rgba(78, 210, 172, 1)"),
             hovertemplate =
               paste0("<b>Dosis entregadas de Moderna",
+                     "</b><extra></extra><br>",
+                     "a fecha de %{y}: %{x}"))
+
+# Dosis entregadas de Janssen
+fig_dosis_entregadas_horizontal <-
+  fig_dosis_entregadas_horizontal %>%
+  add_trace(y = as.character(panel_vacunas$ES$fechas),
+            x = panel_vacunas$ES$dosis_entrega_janssen,
+            type = "bar", name = "Janssen",
+            marker = list(color = "rgba(245, 228, 57, 1)"),
+            hovertemplate =
+              paste0("<b>Dosis entregadas de Janssen",
                      "</b><extra></extra><br>",
                      "a fecha de %{y}: %{x}"))
 
@@ -831,7 +877,9 @@ dosis_semana <-
              "semana" = week(as.Date(panel_vacunas$ES$fechas)),
              "dosis_pfizer" = panel_vacunas$ES$dosis_entrega_pfizer,
              "dosis_astra" = panel_vacunas$ES$dosis_entrega_astra,
-             "dosis_moderna" = panel_vacunas$ES$dosis_entrega_moderna)
+             "dosis_moderna" = panel_vacunas$ES$dosis_entrega_moderna,
+             "dosis_janssen" = panel_vacunas$ES$dosis_entrega_janssen)
+
 
 # Agrupamos por semana
 aux <- dosis_semana %>% group_by(semana) %>%
@@ -841,11 +889,15 @@ aux <- cbind(aux, (dosis_semana %>% group_by(semana) %>%
 aux <- cbind(aux, (dosis_semana %>% group_by(semana) %>%
                      summarise(dosis_moderna =
                                  max(dosis_moderna)))$dosis_moderna)
+aux <- cbind(aux, (dosis_semana %>% group_by(semana) %>%
+                     summarise(dosis_janssen =
+                                 max(dosis_janssen)))$dosis_janssen)
 
 # Guardamos y renombramos columnas
 dosis_semana <- aux
 names(dosis_semana) <-
-  c("semana", "dosis_pfizer", "dosis_astra", "dosis_moderna")
+  c("semana", "dosis_pfizer", "dosis_astra",
+    "dosis_moderna", "dosis_janssen")
 
 # Figura como diagrama polar
 fig_dosis_entregadas_rosa <-
@@ -853,6 +905,19 @@ fig_dosis_entregadas_rosa <-
 
 # Dosis entregadas de AstraZeneca
 # (puesto como suma de las 3, como última capa)
+fig_dosis_entregadas_rosa <- fig_dosis_entregadas_rosa %>%
+  add_trace(t = dosis_semana$semana,
+            r = dosis_semana$dosis_astra + dosis_semana$dosis_moderna +
+              dosis_semana$dosis_pfizer + dosis_semana$dosis_janssen,
+            theta = paste0("Semana ", dosis_semana$semana),
+            fill = "toself", fillcolor = "rgba(245, 228, 57, 0.75)",
+            line = list(color = "rgba(183, 170, 39, 0.85)"),
+            name = "Janssen",
+            hovertemplate = # Info HTML al pasar el ratón
+              paste0("Semana ", dosis_semana$semana,
+                     "<extra></extra><br>",
+                     "<b>Dosis entregadas de Janssen</b>: %{r}"))
+
 fig_dosis_entregadas_rosa <- fig_dosis_entregadas_rosa %>%
   add_trace(t = dosis_semana$semana,
             r = dosis_semana$dosis_astra + dosis_semana$dosis_moderna +
@@ -1131,15 +1196,17 @@ if (gofres) {
       panel_vacunas$ES$dosis_entrega[i]
     proporciones[3] <- panel_vacunas$ES$dosis_entrega_astra[i] /
       panel_vacunas$ES$dosis_entrega[i]
-    names(proporciones) <- c("Pfizer", "Moderna", "AstraZeneca")
+    proporciones[4] <- panel_vacunas$ES$dosis_entrega_janssen[i] /
+      panel_vacunas$ES$dosis_entrega[i]
+    names(proporciones) <- c("Pfizer", "Moderna", "AstraZeneca", "Janssen")
     
     # Los waffle son ggplot (no plotly) así que deben ser editados como tal
     fig_waffle_dosis_entregadas[[i]] <-
       waffle(parts =
-               c(round(proporciones[1:2] * n_cuadrados),
-                 "AstraZeneca" =
-                   n_cuadrados - sum(round(proporciones[1:2] * n_cuadrados))),
-             rows = 10, colors = c("#60B2FF", "#4ED2AC", "#E96980")) +
+               c(round(proporciones[1:3] * n_cuadrados),
+                 "Janssen" =
+                   max(0, n_cuadrados - sum(round(proporciones[1:3] * n_cuadrados)))),
+             rows = 10, colors = c("#60B2FF", "#4ED2AC", "#E96980", "#F5E439")) +
       ggtitle(paste0("Dosis entregadas (acumuladas) en España (",
                      format(as.Date(panel_vacunas$ES$fechas[i]), "%d-%m-%Y"),
                      ")"),
@@ -1370,124 +1437,142 @@ if (gofres) {
 
 
 # #############################################
-# 14. Mapa relleno
+# 14. MAPA RELLENO
 # #############################################
 
 if (mapas) { source("./mapa_relleno.R") }
 
 
+# #########################
+# 15. GRÁFICOS VIOLÍN
+# #########################
+
 
 # 
-# fig <- df %>%
-#   plot_ly(
-#     x = ~day,
-#     y = ~total_bill,
-#     split = ~day,
-#     type = 'violin',
-#     box = list(
-#       visible = T
-#     ),
-#     meanline = list(
-#       visible = T
-#     )
-#   ) 
 # 
+# datos <-
+#   c(panel_vacunas$ES$dosis_admin_100hab[107],
+#     panel_vacunas$AN$dosis_admin_100hab[107],
+#     panel_vacunas$AR$dosis_admin_100hab[107],
+#     panel_vacunas$AS$dosis_admin_100hab[107],
+#     panel_vacunas$IB$dosis_admin_100hab[107],
+#     panel_vacunas$CN$dosis_admin_100hab[107],
+#     panel_vacunas$CB$dosis_admin_100hab[107],
+#     panel_vacunas$CL$dosis_admin_100hab[107],
+#     panel_vacunas$CM$dosis_admin_100hab[107],
+#     panel_vacunas$CT$dosis_admin_100hab[107],
+#     panel_vacunas$VC$dosis_admin_100hab[107],
+#     panel_vacunas$EX$dosis_admin_100hab[107],
+#     panel_vacunas$GA$dosis_admin_100hab[107],
+#     panel_vacunas$RI$dosis_admin_100hab[107])
+# fig <- plot_ly(type = "violin")
 # fig <- fig %>%
-#   layout(
-#     xaxis = list(
-#       title = "Day"
-#     ),
-#     yaxis = list(
-#       title = "Total Bill",
-#       zeroline = F
-#     )
-#   )
+#   add_trace(y = datos,
+#             type = "violin", box = list(visible = TRUE),
+#             meanline = list(visible = TRUE), hoveron = "points+kde",
+#             points = "all", pointpos = 1, jitter = 0,
+#             scalemode = "count",
+#             color = I("#8dd3c7"),
+#             marker = list(line = list(width = 2, color = "#8dd3c7"),
+#               symbol = 'line-ns')) 
 # 
-# fig
-# 
-# df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv")
-# 
-# pointposMale <- c(-0.9,-1.1,-0.6,-0.3)
-# pointposFemale <- c(0.45,0.55,1,0.4)
-# showLegend <- c(T,F,F,F)
-# 
-# fig <- plot_ly(type = 'violin')
-# 
-# i = 0
-# for (i in 1:length(unique(df$day))) {
-#   fig <- add_trace(
-#     fig,
-#     x = df$day[df$sex == 'Male' & df$day == unique(df$day)[i]],
-#     y = df$total_bill[df$sex == 'Male' & df$day == unique(df$day)[i]],
-#     hoveron = "points+kde",
-#     legendgroup = 'M',
-#     scalegroup = 'M',
-#     name = 'M',
-#     side = 'negative',
-#     box = list(
-#       visible = T
-#     ),
-#     points = 'all',
-#     pointpos = pointposMale[i],
-#     jitter = 0,
-#     scalemode = 'count',
-#     meanline = list(
-#       visible = T
-#     ),
-#     color = I("#8dd3c7"),
-#     marker = list(
-#       line = list(
-#         width = 2,
-#         color = "#8dd3c7"
-#       ),
-#       symbol = 'line-ns'
-#     ),
-#     showlegend = showLegend[i]
-#   ) 
-#   
-#   fig <- fig %>%
-#     add_trace(
-#       x = df$day[df$sex == 'Female' & df$day == unique(df$day)[i]],
-#       y = df$total_bill[df$sex == 'Female' & df$day == unique(df$day)[i]],
-#       hoveron = "points+kde",
-#       legendgroup = 'F',
-#       scalegroup = 'F',
-#       name = 'F',
-#       side = 'positive',
-#       box = list(
-#         visible = T
-#       ),
-#       points = 'all',
-#       pointpos = pointposFemale[i],
-#       jitter = 0,
-#       scalemode = 'count',
-#       meanline = list(
-#         visible = T
-#       ),
-#       color = I("#bebada"),
-#       marker = list(
-#         line = list(
-#           width = 2,
-#           color = "#bebada"
-#         ),
-#         symbol = 'line-ns'
-#       ),
-#       showlegend = showLegend[i]
-#     )
-# }
-# 
-# fig <- layout(
-#   fig,
-#   title = "Total bill distribution<br><i>scaled by number of bills per gender",
-#   yaxis = list(
-#     zeroline = F
-#   ),
-#   violingap = 0,
-#   violingroupgap = 0,
-#   violinmode = 'overlay',
-#   legend = list(
-#     tracegroupgap = 0
-#   )
-# )
-# 
-# fig
+# # 
+# # fig <- fig %>%
+# #   layout(
+# #     xaxis = list(
+# #       title = "Day"
+# #     ),
+# #     yaxis = list(
+# #       title = "Total Bill",
+# #       zeroline = F
+# #     )
+# #   )
+# # 
+# # fig
+# # 
+# # df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv")
+# # 
+# # pointposMale <- c(-0.9,-1.1,-0.6,-0.3)
+# # pointposFemale <- c(0.45,0.55,1,0.4)
+# # showLegend <- c(T,F,F,F)
+# # 
+# # fig <- plot_ly(type = 'violin')
+# # 
+# # i = 0
+# # for (i in 1:length(unique(df$day))) {
+# #   fig <- add_trace(
+# #     fig,
+# #     x = df$day[df$sex == 'Male' & df$day == unique(df$day)[i]],
+# #     y = df$total_bill[df$sex == 'Male' & df$day == unique(df$day)[i]],
+# #     hoveron = "points+kde",
+# #     legendgroup = 'M',
+# #     scalegroup = 'M',
+# #     name = 'M',
+# #     side = 'negative',
+# #     box = list(
+# #       visible = T
+# #     ),
+# #     points = 'all',
+# #     pointpos = pointposMale[i],
+# #     jitter = 0,
+# #     scalemode = 'count',
+# #     meanline = list(
+# #       visible = T
+# #     ),
+# #     color = I("#8dd3c7"),
+# #     marker = list(
+# #       line = list(
+# #         width = 2,
+# #         color = "#8dd3c7"
+# #       ),
+# #       symbol = 'line-ns'
+# #     ),
+# #     showlegend = showLegend[i]
+# #   ) 
+# #   
+# #   fig <- fig %>%
+# #     add_trace(
+# #       x = df$day[df$sex == 'Female' & df$day == unique(df$day)[i]],
+# #       y = df$total_bill[df$sex == 'Female' & df$day == unique(df$day)[i]],
+# #       hoveron = "points+kde",
+# #       legendgroup = 'F',
+# #       scalegroup = 'F',
+# #       name = 'F',
+# #       side = 'positive',
+# #       box = list(
+# #         visible = T
+# #       ),
+# #       points = 'all',
+# #       pointpos = pointposFemale[i],
+# #       jitter = 0,
+# #       scalemode = 'count',
+# #       meanline = list(
+# #         visible = T
+# #       ),
+# #       color = I("#bebada"),
+# #       marker = list(
+# #         line = list(
+# #           width = 2,
+# #           color = "#bebada"
+# #         ),
+# #         symbol = 'line-ns'
+# #       ),
+# #       showlegend = showLegend[i]
+# #     )
+# # }
+# # 
+# # fig <- layout(
+# #   fig,
+# #   title = "Total bill distribution<br><i>scaled by number of bills per gender",
+# #   yaxis = list(
+# #     zeroline = F
+# #   ),
+# #   violingap = 0,
+# #   violingroupgap = 0,
+# #   violinmode = 'overlay',
+# #   legend = list(
+# #     tracegroupgap = 0
+# #   )
+# # )
+# # 
+# # fig
