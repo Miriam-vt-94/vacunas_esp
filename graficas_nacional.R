@@ -706,7 +706,8 @@ dias_5M <- fecha_5M - fecha_desde_prevision
 inmunizados_5M <- 5e6 -
   max(panel_vacunas$ES$personas_pauta_completa[1:idx_desde_prevision])
 inmunizados_dia_5M <- inmunizados_5M / as.numeric(dias_5M)
-fechas_hasta_prevision_5M <- max(as.Date(panel_vacunas$ES$fechas)) + 8
+fechas_hasta_prevision_5M <- min(fecha_5M,
+                                 max(as.Date(panel_vacunas$ES$fechas)) + 8)
 inmunizados_prevision_5M <-
   c(panel_vacunas$ES$personas_pauta_completa[1:idx_desde_prevision],
     panel_vacunas$ES$personas_pauta_completa[idx_desde_prevision + 1] +

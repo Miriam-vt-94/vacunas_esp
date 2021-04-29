@@ -22,7 +22,7 @@ row.names(poblacion) <- ccaa$ISO
 # una tabla  de tamaño n_ccaa x n_fechas
 filtrado_extraccion_pdf <-
   function(pdf, fechas_filtrado, marca = "ANDALUCÍA",
-           nombres_ccaa, idx2 = 1) {
+           nombres_ccaa, idx2 = 1, pagina = 2) {
     
     # Guardamos datos filtrados por fecha tal cual
     pdf_filtrado <- pdf[as.character(fechas_filtrado)]
@@ -31,8 +31,7 @@ filtrado_extraccion_pdf <-
     # Leemos la segunda página
     # En tabla_bruto se guarda un vector de 6 elementos, cada uno
     # contiene la página 2 entera
-    tabla_bruto <- pdf_filtrado %>% map("text") %>%
-      map_chr(function(x) { x[2]} )
+    tabla_bruto <- pdf_filtrado %>% map("text") %>% map_chr(function(x) { x[pagina] } )
     tabla_bruto <- toupper(tabla_bruto) # A mayúsculas
     
     # En cada fecha (elemento de la lista), cada línea (salto de línea = "\n")
@@ -539,14 +538,69 @@ names(panel_vacunas) <- ccaa$ISO
 
 
 # ###########################
-# Filtramos DESDE 22 ABRIL INCLUIDO y extraemos
+# Filtramos DESDE 22 ABRIL INCLUIDO HASTA 27 ABRIL INCLUIDO
 # ###########################
 fechas_filtro <-
   fechas[fechas %in%
-           seq(as.Date("2021-04-22"), as.Date(Sys.time()), by = 1)]
+           seq(as.Date("2021-04-22"), as.Date("2021-04-27"), by = 1)]
 nombres_ccaa <- ccaa$NOMBRES
 tabla_valores <- # Matriz de nº ccaa x fechas
   filtrado_extraccion_pdf(pdf_bruto, fechas_filtro, nombres_ccaa = nombres_ccaa)
+
+for (i in 1:length(ccaa$ISO)) {
+  
+  aux <- str_split(str_split(pattern =
+                               as.character(ccaa$NOMBRES[i]),
+                             tabla_valores[min(i, 21), ]), pattern = " ")
+  aux <- aux %>% map(function(x) { x[x != ""] }) %>%
+    map(gsub, pattern = "%", replacement = "") %>%
+    map(gsub, pattern = "\\.", replacement = "") %>%
+    map(gsub, pattern = ",", replacement = ".") %>%
+    map(as.numeric) %>% map(na.omit)
+  
+  matriz_datos <- t(matrix(unlist(aux), nrow = 9))
+  aux <- data.frame("fechas" = fechas_filtro,
+                    "ISO" = as.character(poblacion$ISO[i]),
+                    "poblacion" = poblacion$poblacion[i],
+                    "porc_pobl_total" = poblacion$porc_pobl_total[i],
+                    "poblacion_mayor_16a" =
+                      poblacion$poblacion_mayor_16a[i],
+                    "porc_pobl_total_mayor_16a" =
+                      poblacion$porc_pobl_total_mayor_16a[i],
+                    matriz_datos)
+  names(aux) <-
+    c("fechas", "ISO", "poblacion", "porc_pobl_total",
+      "poblacion_mayor_16a", "porc_pobl_total_mayor_16a",
+      "dosis_entrega_pfizer", "dosis_entrega_moderna",
+      "dosis_entrega_astra", "dosis_entrega_janssen",
+      "dosis_entrega", "dosis_admin",
+      "porc_admin_sobre_ccaa", "personas_vacunadas",
+      "personas_pauta_completa")
+  
+  # Calculamos dosis entregadas en total
+  aux$dosis_entrega <- aux$dosis_entrega_pfizer +
+    aux$dosis_entrega_moderna + aux$dosis_entrega_astra +
+    aux$dosis_entrega_janssen
+  
+  # Personas solo 1 dosis
+  aux$personas_1dosis <- aux$personas_vacunadas -
+    aux$personas_pauta_completa
+  
+  # Añadimos
+  panel_vacunas[[i]] <- rbind(panel_vacunas[[i]], aux)
+}
+names(panel_vacunas) <- ccaa$ISO
+
+# ###########################
+# Filtramos DESDE 28 ABRIL INCLUIDO EN ADELANTE
+# ###########################
+fechas_filtro <-
+  fechas[fechas %in%
+           seq(as.Date("2021-04-28"), as.Date(Sys.time()), by = 1)]
+nombres_ccaa <- ccaa$NOMBRES
+tabla_valores <- # Matriz de nº ccaa x fechas
+  filtrado_extraccion_pdf(pdf_bruto, fechas_filtro, nombres_ccaa = nombres_ccaa,
+                          pagina = 3)
 
 for (i in 1:length(ccaa$ISO)) {
   

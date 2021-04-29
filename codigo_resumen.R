@@ -41,18 +41,16 @@ mapas <- FALSE # TRUE para generar mapas (1ª vez lento, luego solo genera los n
 # DESCARGA PDF DE VACUNAS + CARGA DE DATOS
 # ##################################################
 
-# Cargamos datos ya descargados
+# Cargamos datos ya descargados (para no descargarlos de nuevo)
 load("./DATOS/pdf_bruto.RData")
 fechas_descargadas <- names(pdf_bruto)
 
-# Secuencia de fechas a leer (ampliar fechas si fuese necesario)
-# le quitamos las fechas ya bajadas
+# Secuencia de fechas a leer (sin las fechas ya bajadas
 fechas <-
-  setdiff(as.character(seq(as.Date("2021-01-05"),
-                           as.Date(Sys.time()), by = 1)),
+  setdiff(as.character(seq(as.Date("2021-01-05"), as.Date(Sys.time()), by = 1)),
           fechas_descargadas)
-pdf_nuevo <- pdf_bruto # los antiguos
-nombres <- names(pdf_bruto) # los antiguos
+pdf_nuevo <- pdf_bruto # en pdf_nuevo guardamos los antiguos que modificaremos
+nombres <- names(pdf_bruto)
 
 # Lista de posibles url (vacunas)
 url_vacunas <-
@@ -63,7 +61,7 @@ url_vacunas <-
 # Con tryCatch, la orden se ejecuta y sigue el proceso aunque
 # devuelva error (que lo marcamos con un -1)
 intento_pdf <- # lista
-  sapply(url_vacunas,
+  sapply(url_vacunas, # para cada valor de 
          FUN = function(x) { tryCatch(read_pdf(x),
                                       error = function(e) { -1 }) })
 
