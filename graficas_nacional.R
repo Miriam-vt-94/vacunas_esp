@@ -697,13 +697,13 @@ htmlwidgets::saveWidget(fig_dosis_admin_diarias,
 # 7. PERSONAS VACUNADAS ACUMULADAS
 # #####################################################
 
-# Previsión de los 5 millones de inmunizados con pauta completa
-fecha_5M <- as.Date("2021-05-03")
+# Previsión de los 10 millones de inmunizados con pauta completa
+fecha_5M <- as.Date("2021-06-07")
 idx_desde_prevision <- length(panel_vacunas$ES$fechas) - 6
 fecha_desde_prevision <-
   max(as.Date(panel_vacunas$ES$fechas)[1:idx_desde_prevision])
 dias_5M <- fecha_5M - fecha_desde_prevision
-inmunizados_5M <- 5e6 -
+inmunizados_5M <- 1e7 -
   max(panel_vacunas$ES$personas_pauta_completa[1:idx_desde_prevision])
 inmunizados_dia_5M <- inmunizados_5M / as.numeric(dias_5M)
 fechas_hasta_prevision_5M <- min(fecha_5M,
@@ -795,12 +795,12 @@ fig_vacunados <-
               c(panel_vacunas$ES$personas_pauta_completa[idx_desde_prevision:length(panel_vacunas$ES$personas_pauta_completa)],
                 rep(0, length(fechas_prevision_5M) -
                       length(panel_vacunas$ES$personas_pauta_completa))),
-            type = "bar",  name = "Inmunizados necesarios para 5M (3 de mayo)",
+            type = "bar",  name = "Inmunizados necesarios para 10M (7 de junio)",
             marker = list(color = "rgba(17, 17, 17, 0.3)"),
             hovertemplate = # Info HTML al pasar el ratón
               paste0("<b>Vacunados (pauta completa) necesarios</b>",
                      "<extra></extra><br>",
-                     "a %{x} para 5M inmun. (3 de mayo): ",
+                     "a %{x} para 10M inmun. (7 de junio): ",
                      floor(inmunizados_prevision_5M[-(1:(idx_desde_prevision - 1))])))
 
 # Vacunados totales
