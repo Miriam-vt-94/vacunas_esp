@@ -171,11 +171,11 @@ for (i in idx) {
     scale_fill_manual(values = c("nonvac" = "gray65",
                                  "first" = "#1ab0d4", "second" = "#1a698a")) +
     geom_segment(
-      data = pct_labels[!(pct_labels$point_to_label %in% c("10%", "70%")), ],
+      data = pct_labels[!(pct_labels$point_to_label %in% c("20%", "70%")), ],
       aes( x = start_line, xend = end_line, y = y, yend = y),
       color = "gray80", linetype = "dashed") +
     geom_segment(
-      data = pct_labels[pct_labels$point_to_label == "10%", ],
+      data = pct_labels[pct_labels$point_to_label == "20%", ],
       aes(x = start_line, xend = end_line, y = y, yend = y),
       color = "#17CF9A", linetype = "dashed") +
     geom_segment(
@@ -184,12 +184,12 @@ for (i in idx) {
       color = "#EB4444", linetype = "dashed") +
     # Percent labels
     geom_text(
-      data = pct_labels[!(pct_labels$point_to_label %in% c("10%", "70%")), ],
+      data = pct_labels[!(pct_labels$point_to_label %in% c("20%", "70%")), ],
       aes(x = start_line - 10000, y = y, label = point_to_label),
       size = 5, color = "gray60", family = "Arial") +
     geom_text(
-      data = pct_labels[pct_labels$point_to_label == "10%", ],
-      aes(x = start_line - 5000, y = y, label = "10% (3 mayo)"),
+      data = pct_labels[pct_labels$point_to_label == "20%", ],
+      aes(x = start_line - 5000, y = y, label = "20% (7 de junio)"),
       size = 7, color = "#129E75", family = "Arial") +
     geom_text(
       data = pct_labels[pct_labels$point_to_label == "70%", ],

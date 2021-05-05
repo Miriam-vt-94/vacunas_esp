@@ -34,9 +34,9 @@ if(!require(ragg)) install.packages("ragg", repos = repos)
 
 
 # ---------
-animaciones <- FALSE # poner TRUE si se quieren generar animaciones
-gofres <- FALSE # poner TRUE si se quieren generar gofres
-mapas <- FALSE # TRUE para generar mapas (1ª vez lento, luego solo genera los no creados)
+animaciones <- TRUE # poner TRUE si se quieren generar animaciones
+gofres <- TRUE # poner TRUE si se quieren generar gofres
+mapas <- TRUE # TRUE para generar mapas (1ª vez lento, luego solo genera los no creados)
 # ##################################################
 # DESCARGA PDF DE VACUNAS + CARGA DE DATOS
 # ##################################################
