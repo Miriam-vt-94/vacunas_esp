@@ -218,7 +218,7 @@ for (i in idx) {
                   format(as.Date(datos_esp$fechas), "%d-%m-%Y"), ")"),
       subtitle = glue(
         paste0("Gráfico elaborado por Javier Álvarez Liébana (@DadosDeLaplace). ",
-               "Se ha prometido llegar a 5M (10.56%) de inmunizados el 3 de mayo.")
+               "Se ha prometido llegar a 10M (21.12%) de inmunizados el 3 de mayo.")
       ),
       # Take the most up to date from the esp_data df we created above
       caption = glue(paste0("Datos: Ministerio de Sanidad e INE | ",
